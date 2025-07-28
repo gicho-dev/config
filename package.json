@@ -1,0 +1,44 @@
+{
+	"name": "gicho-config-monorepo",
+	"private": true,
+	"packageManager": "pnpm@10.13.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gicho-dev/config"
+	},
+	"type": "module",
+	"engines": {
+		"node": ">=22",
+		"pnpm": ">=10"
+	},
+	"scripts": {
+		"build": "turbo build",
+		"clean": "rimraf lib/*",
+		"lint": "eslint .",
+		"gen:eslint-rules-obj": "tsx scripts/gen-eslint-rules-obj.ts",
+		"gen:eslint-types": "jiti scripts/gen-eslint-types.ts",
+		"reset": "pnpm clean && pnpm install",
+		"types": "turbo run types",
+		"types:p": "turbo run types --filter=\"./packages/*\"",
+		"all": "pnpm -F \"./{packages}/**\"",
+		"p": "pnpm -F \"./packages/**\"",
+		"cfg": "pnpm -F ./packages/config"
+	},
+	"devDependencies": {
+		"@gicho/config": "workspace:^",
+		"@types/node": "catalog:dev",
+		"@typescript-eslint/utils": "catalog:dev",
+		"@vitest/coverage-v8": "catalog:dev",
+		"ansis": "catalog:dev",
+		"eslint": "catalog:dev",
+		"jiti": "catalog:dev",
+		"json-schema-to-typescript-lite": "catalog:dev",
+		"prettier": "catalog:dev",
+		"svelte": "catalog:dev",
+		"tsdown": "catalog:dev",
+		"tsx": "catalog:dev",
+		"turbo": "catalog:dev",
+		"typescript": "catalog:dev",
+		"vitest": "catalog:dev"
+	}
+}

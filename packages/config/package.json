@@ -1,0 +1,81 @@
+{
+	"name": "@gicho/config",
+	"version": "0.0.1-alpha.0",
+	"description": "Reusable base ESLint, Prettier and TSConfig for modern TS/JS projects.",
+	"keywords": [
+		"config",
+		"dev",
+		"eslint",
+		"prettier",
+		"tsconfig"
+	],
+	"license": "MIT",
+	"author": "Lucas Choi",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/gichodev/gicho"
+	},
+	"homepage": "https://github.com/gichodev/gicho",
+	"sideEffects": false,
+	"type": "module",
+	"exports": {
+		"./eslint": {
+			"source": "./src/eslint/index.ts",
+			"types": "./dist/eslint.d.ts",
+			"default": "./dist/eslint.js"
+		},
+		"./prettier": {
+			"source": "./src/prettier/index.ts",
+			"types": "./dist/prettier.d.ts",
+			"default": "./dist/prettier.js"
+		},
+		"./tsconfig.base.json": "./tsconfig.base.json",
+		"./tsconfig.react.json": "./tsconfig.react.json",
+		"./package.json": "./package.json"
+	},
+	"files": [
+		"dist",
+		"src",
+		"tsconfig.base.json",
+		"tsconfig.react.json"
+	],
+	"scripts": {
+		"b": "tsdown",
+		"build": "tsdown",
+		"lint": "eslint .",
+		"lint:fix": "eslint --fix .",
+		"format": "prettier --write .",
+		"types": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@eslint/js": "catalog:prod",
+		"@stylistic/eslint-plugin": "catalog:prod",
+		"eslint-config-flat-gitignore": "catalog:prod",
+		"eslint-config-prettier": "catalog:prod",
+		"eslint-plugin-import-x": "catalog:prod",
+		"eslint-plugin-jsdoc": "catalog:prod",
+		"eslint-plugin-jsonc": "catalog:prod",
+		"eslint-plugin-perfectionist": "catalog:prod",
+		"globals": "catalog:prod",
+		"typescript-eslint": "catalog:prod"
+	},
+	"devDependencies": {},
+	"peerDependencies": {
+		"@eslint-react/eslint-plugin": "^1.52",
+		"eslint": ">= 9.32",
+		"eslint-plugin-react-hooks": "^5.2",
+		"eslint-plugin-svelte": "^3.11",
+		"prettier": ">= 3.5"
+	},
+	"peerDependenciesMeta": {
+		"@eslint-react/eslint-plugin": {
+			"optional": true
+		},
+		"eslint-plugin-react-hooks": {
+			"optional": true
+		},
+		"eslint-plugin-svelte": {
+			"optional": true
+		}
+	}
+}
