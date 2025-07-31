@@ -1,6 +1,6 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
-import { pluginJsdoc } from '../core/plugins'
+import jsdocPlugin from 'eslint-plugin-jsdoc'
 
 /**
  * JSDoc configuration
@@ -14,7 +14,7 @@ export const jsdoc: ConfigGroupFn<'jsdoc'> = async (opts, ctx) => {
 		{
 			name: 'gicho/jsdoc',
 			plugins: {
-				jsdoc: pluginJsdoc,
+				jsdoc: jsdocPlugin,
 			},
 			rules: {
 				// ref: https://github.com/gajus/eslint-plugin-jsdoc/blob/main/src/index.js

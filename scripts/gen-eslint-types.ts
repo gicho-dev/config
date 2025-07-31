@@ -42,7 +42,7 @@ async function generateRuleType(name: string, rule: Rule.RuleModule) {
 				if (resolved === typeName) {
 					return typeName
 				}
-				return resolved ? `_${normalizeIdentifier(`${typeName}_${resolved}`)}` : undefined!
+				return resolved ? `_${normalizeIdentifier(`${typeName}_${resolved}`)}` : '' // undefined
 			},
 			strictIndexSignatures: true,
 			unreachableDefinitions: false,

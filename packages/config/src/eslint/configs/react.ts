@@ -3,7 +3,7 @@ import type { Linter } from 'eslint'
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
-import { pluginTs } from '../core/plugins'
+import { tsParser } from './ts'
 
 /**
  * React configuration
@@ -11,7 +11,7 @@ import { pluginTs } from '../core/plugins'
  * @see https://eslint-react.xyz/docs/rules/overview
  */
 export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
-	const { ts: enableTypescript } = ctx.rootOptions
+	const { ts } = ctx.rootOptions
 
 	const { files = [GLOBS.SRC], onFinalize = (v) => v } = options
 
@@ -34,9 +34,9 @@ export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
 			name: 'gicho/react/rules',
 			files,
 			languageOptions: {
-				...(enableTypescript
+				...(ts.enabled
 					? {
-							parser: pluginTs.parser as Linter.Parser,
+							parser: tsParser as Linter.Parser,
 							parserOptions: {
 								projectService: true,
 							},
@@ -44,7 +44,7 @@ export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
 					: undefined),
 			},
 			rules: {
-				...(enableTypescript
+				...(ts.enabled
 					? reactPlugin.configs['recommended-typescript'].rules
 					: reactPlugin.configs.recommended.rules),
 

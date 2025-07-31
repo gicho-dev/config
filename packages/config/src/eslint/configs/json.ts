@@ -5,8 +5,9 @@ import type {
 	LinterConfig,
 } from '../core/types'
 
+import jsoncPlugin from 'eslint-plugin-jsonc'
+
 import { GLOBS } from '../core/constants'
-import { pluginJsonc } from '../core/plugins'
 
 /**
  * JSON configuration
@@ -21,13 +22,13 @@ export const json: ConfigGroupFn<'json'> = async (opts, ctx) => {
 		sortTsconfigJson,
 	} = opts
 
-	const languageOptions = pluginJsonc.configs['flat/base'][1].languageOptions
+	const languageOptions = jsoncPlugin.configs['flat/base'][1].languageOptions
 
 	const items: LinterConfig[] = [
 		{
 			name: 'gicho/json/setup',
 			plugins: {
-				jsonc: pluginJsonc,
+				jsonc: jsoncPlugin,
 			},
 		},
 		{

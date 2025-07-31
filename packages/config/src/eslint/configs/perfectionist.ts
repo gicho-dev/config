@@ -1,6 +1,6 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
-import { pluginPerfectionist } from '../core/plugins'
+import perfectionistPlugin from 'eslint-plugin-perfectionist'
 
 /**
  * Perfectionist configuration
@@ -18,7 +18,14 @@ export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) =
 		if (preset === 'default') {
 			return {
 				// Enforce sorted exports
-				'perfectionist/sort-exports': ['error', { order: 'asc', type: 'natural' }],
+				'perfectionist/sort-exports': [
+					'error',
+					{
+						groups: ['type-export', 'value-export', 'unknown'],
+						order: 'asc',
+						type: 'natural',
+					},
+				],
 				// Enforce sorted imports
 				'perfectionist/sort-imports': [
 					'error',
@@ -57,14 +64,14 @@ export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) =
 		}
 
 		// other rules (from the plugin)
-		return pluginPerfectionist.configs[preset]?.rules
+		return perfectionistPlugin.configs[preset]?.rules
 	}
 
 	const items: LinterConfig[] = [
 		{
 			name: 'gicho/perfectionist/rules',
 			plugins: {
-				perfectionist: pluginPerfectionist,
+				perfectionist: perfectionistPlugin,
 			},
 			rules: {
 				...getPresetRules(),

@@ -1,6 +1,6 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
-import { pluginImport } from '../core/plugins'
+import importPlugin from 'eslint-plugin-import-x'
 
 /**
  * Import configuration
@@ -14,7 +14,7 @@ export const importFn: ConfigGroupFn<'import'> = async (opts, ctx) => {
 		{
 			name: 'gicho/import/rules',
 			plugins: {
-				'import-x': pluginImport,
+				'import-x': importPlugin,
 			},
 
 			rules: {

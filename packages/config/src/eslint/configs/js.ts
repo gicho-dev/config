@@ -1,8 +1,7 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
+import jsPlugin from '@eslint/js'
 import globals from 'globals'
-
-import { pluginJs } from '../core'
 
 /**
  * JS configuration
@@ -11,7 +10,8 @@ import { pluginJs } from '../core'
  */
 export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 	const { onFinalize = (v) => v, preset = 'default' } = opts
-	opts.preset = preset
+
+	Object.assign(opts, { preset })
 
 	const getPresetRules = (): LinterConfig['rules'] => {
 		if (preset === false) {
@@ -21,7 +21,7 @@ export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 		if (preset === 'default') {
 			return {
 				// ref: https://github.com/eslint/eslint/blob/main/packages/js/src/configs/eslint-recommended.js
-				...pluginJs.configs.recommended.rules,
+				...jsPlugin.configs.recommended.rules,
 
 				/* ----------------------------------------
 				 *   gicho custom rules
@@ -81,10 +81,7 @@ export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 				// Disallow ternary operators when simpler alternatives exist
 				'no-unneeded-ternary': 'error',
 				// Disallow unused expressions
-				'no-unused-expressions': [
-					'error',
-					{ allowShortCircuit: true, allowTaggedTemplates: true, allowTernary: true },
-				],
+				'no-unused-expressions': 'error',
 				// Disallow unnecessary calls to .call() and .apply()
 				'no-useless-call': 'error',
 				// Disallow unnecessary computed property keys in objects and classes
@@ -121,7 +118,7 @@ export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 		}
 
 		// other rules (from the plugin)
-		return pluginJs.configs[preset]?.rules
+		return jsPlugin.configs[preset]?.rules
 	}
 
 	const items: LinterConfig[] = [

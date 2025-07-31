@@ -10,20 +10,18 @@ import type {
 	RulesRecord,
 } from './types'
 
-import {
-	disables,
-	ignores,
-	importFn,
-	js,
-	jsdoc,
-	json,
-	perfectionist,
-	prettier,
-	react,
-	stylistic,
-	svelte,
-	ts,
-} from '../configs'
+import { disables } from '../configs/disables'
+import { ignores } from '../configs/ignores'
+import { importFn } from '../configs/import'
+import { js } from '../configs/js'
+import { jsdoc } from '../configs/jsdoc'
+import { json } from '../configs/json'
+import { perfectionist } from '../configs/perfectionist'
+import { prettier } from '../configs/prettier'
+import { react } from '../configs/react'
+import { stylistic } from '../configs/stylistic'
+import { svelte } from '../configs/svelte'
+import { ts } from '../configs/ts'
 import { findPackages, normalizeOptions } from './utils'
 
 export async function defineConfig<TRules extends RulesRecord = DefaultRules>(

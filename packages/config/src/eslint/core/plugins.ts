@@ -1,6 +1,0 @@
-export { default as pluginJs } from '@eslint/js'
-export { default as pluginImport } from 'eslint-plugin-import-x'
-export { default as pluginJsdoc } from 'eslint-plugin-jsdoc'
-export { default as pluginJsonc } from 'eslint-plugin-jsonc'
-export { default as pluginPerfectionist } from 'eslint-plugin-perfectionist'
-export { default as pluginTs } from 'typescript-eslint'

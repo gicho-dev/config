@@ -1,7 +1,7 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
-import { pluginTs } from '../core/plugins'
+import { tsParser } from './ts'
 
 /**
  * Svelte configuration
@@ -22,8 +22,8 @@ export const svelte: ConfigGroupFn<'svelte'> = async (opts, ctx) => {
 
 	const sveltePlugin = (await import('eslint-plugin-svelte')).default
 
-	const recommendedRules = sveltePlugin.configs.recommended.at(-1)!.rules!
-	const prettierRules = sveltePlugin.configs.prettier.at(-1)!.rules!
+	const recommendedRules = sveltePlugin.configs.recommended.at(-1)?.rules
+	const prettierRules = sveltePlugin.configs.prettier.at(-1)?.rules
 
 	const items: LinterConfig[] = [
 		// ref: https://github.com/sveltejs/eslint-plugin-svelte/blob/main/packages/eslint-plugin-svelte/src/configs/flat/base.ts
@@ -36,7 +36,7 @@ export const svelte: ConfigGroupFn<'svelte'> = async (opts, ctx) => {
 				parserOptions: ts.enabled
 					? {
 							extraFileExtensions: ['.svelte'],
-							parser: pluginTs.parser,
+							parser: tsParser,
 							projectService: true,
 							svelteConfig,
 						}
