@@ -1,5 +1,7 @@
-// @ts-check
-
-import { withSharedConfig } from '@gicho/config/prettier'
-
-export default withSharedConfig('w100-tab')
+/** @type {import('prettier').Config} */
+export default {
+	printWidth: 100,
+	semi: false,
+	singleQuote: true,
+	useTabs: true,
+}
