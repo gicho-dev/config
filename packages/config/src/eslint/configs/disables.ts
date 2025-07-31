@@ -10,20 +10,13 @@ export const disables: ConfigGroupFn<'disables'> = async (opts, ctx) => {
 
 	const items: LinterConfig[] = [
 		{
-			name: 'gicho/disables/scripts',
-			files: [`**/scripts/${GLOBS.SRC}`],
+			name: 'gicho/disables/cjs',
+			files: ['**/*.js', '**/*.cjs'],
 			rules: {
-				'no-console': 'off',
-				'@typescript-eslint/explicit-function-return-type': 'off',
+				'@typescript-eslint/no-require-imports': 'off',
 			},
 		},
-		{
-			name: 'gicho/disables/cli',
-			files: [`**/cli/${GLOBS.SRC}`, `**/cli.${GLOBS.SRC_EXT}`],
-			rules: {
-				'no-console': 'off',
-			},
-		},
+
 		{
 			name: 'gicho/disables/dts',
 			files: ['**/*.d.?([cm])ts'],
@@ -32,16 +25,45 @@ export const disables: ConfigGroupFn<'disables'> = async (opts, ctx) => {
 				'import-x/no-duplicates': 'off',
 			},
 		},
+
 		{
-			name: 'gicho/disables/cjs',
-			files: ['**/*.js', '**/*.cjs'],
+			name: 'gicho/disables/cli',
+			files: [`**/cli/${GLOBS.SRC}`, `**/cli.${GLOBS.SRC_EXT}`],
 			rules: {
-				'@typescript-eslint/no-require-imports': 'off',
+				'no-console': 'off',
 			},
 		},
 		{
+			name: 'gicho/disables/scripts',
+			files: [`**/scripts/${GLOBS.SRC}`],
+			rules: {
+				'no-console': 'off',
+				'@typescript-eslint/explicit-function-return-type': 'off',
+			},
+		},
+
+		{
 			name: 'gicho/disables/config-files',
 			files: [`**/*.config.${GLOBS.SRC_EXT}`, `**/*.config.*.${GLOBS.SRC_EXT}`],
+			rules: {
+				'no-console': 'off',
+				'@typescript-eslint/explicit-function-return-type': 'off',
+			},
+		},
+
+		{
+			name: 'gicho/disables/tests',
+			files: [
+				`**/*.{bench,fixture,spec,test}.${GLOBS.SRC_EXT}`,
+				`**/{tests,__tests__}/**/*.${GLOBS.SRC_EXT}`,
+			],
+			rules: {
+				'@typescript-eslint/explicit-function-return-type': 'off',
+			},
+		},
+		{
+			name: 'gicho/disables/stories',
+			files: [`**/*.stories.${GLOBS.SRC_EXT}`],
 			rules: {
 				'no-console': 'off',
 				'@typescript-eslint/explicit-function-return-type': 'off',
