@@ -40,7 +40,7 @@ export interface ConfigOptions<TRules extends RulesRecord>
 
 interface RootOptions<TRules extends RulesRecord> {
 	/**
-	 * Whether to enable all rule groups (js, ts, import, etc.) by default.
+	 * Whether to enable all config groups (js, ts, import, etc.) by default.
 	 * Individual groups can still be disabled as needed.
 	 *
 	 * @default false
@@ -170,7 +170,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 }
 
 export type ResolvedConfigOptions<TRules extends RulesRecord> = {
-	[K: string]: Record<string, any> & { enabled: boolean }
+	[K: string]: Record<string, unknown> & { enabled: boolean }
 } & ({
 	[K in ConfigGroupName]: ConfigGroupOptionsMap<TRules>[K] & { enabled: boolean }
 } & Required<RootOptions<TRules>>)
@@ -200,7 +200,14 @@ export interface ConfigGroupFnContext<TRules extends RulesRecord> {
 export type ConfigGroupName = keyof ConfigGroupOptionsMap<DefaultRules>
 
 export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
-	disables: BaseOptions<TRules>
+	disables: BaseOptions<TRules> & {
+		/**
+		 * Whether to apply disable rules for test files.
+		 *
+		 * @default false
+		 */
+		tests?: boolean
+	}
 
 	ignores: BaseOptions<TRules> & {
 		/**
@@ -296,11 +303,59 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 	ts: BaseOptionsWithRules<TRules> &
 		FilesOptions & {
 			/**
+			 * Enables `explicit-function-return-type` rule to specified files.
+			 * Pass `true` for default options or an object for custom options.
+			 *
+			 * @default false
+			 * @see https://typescript-eslint.io/rules/explicit-function-return-type
+			 *
+			 * Default rule options:
+			 * ```ts
+			 * {
+			 *   allowExpressions: true,
+			 *   allowIIFEs: true,
+			 * }
+			 * ```
+			 */
+			explicitFunctionReturnType?: boolean | (FilesOptions & RulesOptions<TRules>)
+			/**
 			 * Additional glob patterns to apply to the config
 			 */
 			extraFiles?: string[]
 			parserOptions?: TSParserOptions
-			typeAware?: TypeAwareOptions<TRules>
+			/**
+			 * Specifies which rule preset to use from the `typescript-eslint` plugin.
+			 *
+			 * - `false` - No rules are applied.
+			 * - `'default'` - Enables the default (opinionated) rules.
+			 * - `'default-library'` - Enables the default (opinionated) rules for library files.
+			 * - `Others` - Use a named preset from the `typescript-eslint` plugin.
+			 *
+			 * @default 'default'
+			 * @see https://typescript-eslint.io/users/configs
+			 */
+			preset?:
+				| false
+				| 'default'
+				| 'all'
+				| 'recommended'
+				| 'recommended-type-checked'
+				| 'recommended-type-checked-only'
+				| 'strict'
+				| 'strict-type-checked'
+				| 'strict-type-checked-only'
+
+			/**
+			 * Specifies which stylistic rule preset to use from the `typescript-eslint` plugin.
+			 *
+			 * @default false
+			 * @see https://typescript-eslint.io/users/configs
+			 */
+			stylisticPreset?:
+				| false
+				| 'stylistic'
+				| 'stylistic-type-checked'
+				| 'stylistic-type-checked-only'
 		}
 }
 
@@ -319,14 +374,14 @@ interface BaseOptions<TRules extends RulesRecord> {
 }
 type BaseOptionsWithRules<TRules extends RulesRecord> = BaseOptions<TRules> & RulesOptions<TRules>
 
-interface FilesOptions {
+export interface FilesOptions {
 	/**
 	 * Specifies glob patterns to apply to the config
 	 */
 	files?: string[]
 }
 
-interface RulesOptions<TRules extends RulesRecord> {
+export interface RulesOptions<TRules extends RulesRecord> {
 	/**
 	 * Specifies rules to add or override.
 	 */
@@ -366,10 +421,4 @@ export interface JsonSortTsconfigJsonOptions {
 	 * @default ['target', 'module', 'moduleResolution', 'lib', 'rootDir', 'rootDirs', 'baseUrl']
 	 */
 	compilerOptionsTopKeys?: string[]
-}
-
-interface TypeAwareOptions<TRules extends RulesRecord> extends FilesOptions, RulesOptions<TRules> {
-	ignores?: string[]
-	parserOptions?: TSParserOptions
-	tsconfigPath: string
 }
