@@ -1,4 +1,4 @@
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { pluginPerfectionist } from '../core/plugins'
 
@@ -7,16 +7,16 @@ import { pluginPerfectionist } from '../core/plugins'
  *
  * @see https://perfectionist.dev/rules
  */
-export const perfectionist: ConfigGroupFn<'perfectionist'> = async (options = {}) => {
-	const { onFinalize = (v) => v } = options
+export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) => {
+	const { onFinalize = (v) => v, preset = 'default' } = opts
 
-	return onFinalize([
-		{
-			name: 'gicho/perfectionist/rules',
-			plugins: {
-				perfectionist: pluginPerfectionist,
-			},
-			rules: {
+	const getPresetRules = (): LinterConfig['rules'] => {
+		if (preset === false) {
+			return
+		}
+
+		if (preset === 'default') {
+			return {
 				// Enforce sorted exports
 				'perfectionist/sort-exports': ['error', { order: 'asc', type: 'natural' }],
 				// Enforce sorted imports
@@ -53,10 +53,27 @@ export const perfectionist: ConfigGroupFn<'perfectionist'> = async (options = {}
 				'perfectionist/sort-named-exports': ['error', { order: 'asc', type: 'natural' }],
 				// Enforce sorted named imports
 				'perfectionist/sort-named-imports': ['error', { order: 'asc', type: 'natural' }],
+			}
+		}
+
+		// other rules (from the plugin)
+		return pluginPerfectionist.configs[preset]?.rules
+	}
+
+	const items: LinterConfig[] = [
+		{
+			name: 'gicho/perfectionist/rules',
+			plugins: {
+				perfectionist: pluginPerfectionist,
+			},
+			rules: {
+				...getPresetRules(),
 
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

@@ -1,0 +1,18 @@
+{
+  "comment-long-separator": {
+    "scope": "css,scss,javascript,javascriptreact,typescript,typescriptreact",
+    "prefix": "cmtls",
+    "body": [
+      "/* ----------------------------------------",
+      " *   $1",
+      " * ------------------------------------- */",
+    ],
+  },
+  "comment-short-separator": {
+    "scope": "css,scss,javascript,javascriptreact,typescript,typescriptreact",
+    "prefix": "cmtss",
+    "body": [
+      "/* ---------- $1 ---------- */"
+    ],
+  },
+}

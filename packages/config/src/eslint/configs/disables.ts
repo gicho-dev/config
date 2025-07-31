@@ -4,11 +4,9 @@ import { GLOBS } from '../core'
 
 /**
  * Disables configuration
- *
- * @see https://github.com/prettier/eslint-config-prettier
  */
-export const disables: ConfigGroupFn<'disables'> = async (options = {}) => {
-	const { onFinalize = (v) => v, prettier } = options
+export const disables: ConfigGroupFn<'disables'> = async (opts, ctx) => {
+	const { onFinalize = (v) => v } = opts
 
 	const items: LinterConfig[] = [
 		{
@@ -51,14 +49,5 @@ export const disables: ConfigGroupFn<'disables'> = async (options = {}) => {
 		},
 	]
 
-	if (prettier) {
-		items.push({
-			name: 'gicho/disables/prettier',
-			rules: {
-				...(await import('eslint-config-prettier')).rules,
-			},
-		})
-	}
-
-	return onFinalize(items)
+	return onFinalize(items, ctx) ?? items
 }

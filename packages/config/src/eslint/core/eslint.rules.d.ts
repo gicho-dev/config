@@ -1,8 +1,9 @@
 // Generated file.
 
 import type { Linter } from 'eslint'
+import type { ESLintRules } from 'eslint/rules'
 
-export interface RuleOptions extends Linter.RulesRecord {
+export interface DefaultRules extends Linter.RulesRecord, ESLintRules {
   /**
    * Enforces explicit boolean values for boolean attributes.
    * @see https://eslint-react.xyz/docs/rules/avoid-shorthand-boolean

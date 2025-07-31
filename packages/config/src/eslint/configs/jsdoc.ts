@@ -1,4 +1,4 @@
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { pluginJsdoc } from '../core/plugins'
 
@@ -7,16 +7,18 @@ import { pluginJsdoc } from '../core/plugins'
  *
  * @see https://github.com/gajus/eslint-plugin-jsdoc
  */
-export const jsdoc: ConfigGroupFn<'jsdoc'> = async (options = {}) => {
-	const { onFinalize = (v) => v } = options
+export const jsdoc: ConfigGroupFn<'jsdoc'> = async (opts, ctx) => {
+	const { onFinalize = (v) => v } = opts
 
-	return onFinalize([
+	const items: LinterConfig[] = [
 		{
 			name: 'gicho/jsdoc',
 			plugins: {
 				jsdoc: pluginJsdoc,
 			},
 			rules: {
+				// ref: https://github.com/gajus/eslint-plugin-jsdoc/blob/main/src/index.js
+
 				// ✅ Checks that `@access` tags have a valid value.
 				'jsdoc/check-access': 'warn',
 				// ✅🔧 Reports invalid alignment of JSDoc block asterisks.
@@ -133,8 +135,10 @@ export const jsdoc: ConfigGroupFn<'jsdoc'> = async (options = {}) => {
 				// 'jsdoc/valid-types': 'warn',
 
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

@@ -8,17 +8,14 @@ import { pluginTs } from '../core/plugins'
  *
  * @see https://typescript-eslint.io/rules/
  */
-export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, context = {}) => {
-	const { svelte: enableSvelte } = context?.rootOptions ?? {}
-
+export const ts: ConfigGroupFn<'ts'> = async (opts, ctx) => {
 	const {
-		files = [GLOBS.TS, GLOBS.TSX, enableSvelte ? GLOBS.SVELTE : undefined].filter(
-			Boolean,
-		) as string[],
+		extraFiles = [],
+		files = [GLOBS.TS, GLOBS.TSX, '**/*.d.ts', ...extraFiles].filter(Boolean) as string[],
 		onFinalize = (v) => v,
 		parserOptions,
 		typeAware,
-	} = options
+	} = opts
 
 	const typeAwareFiles = typeAware?.files ?? [GLOBS.TS, GLOBS.TSX]
 	const typeAwareIgnores = typeAware?.ignores ?? [`${GLOBS.ASTRO_TS}`, `${GLOBS.MD}`]
@@ -37,7 +34,7 @@ export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, cont
 		tsconfigPath?: string
 	}): LinterConfig => {
 		return {
-			name: `gicho/typescript/${isTypeAware ? 'parser-type-aware' : 'parser'}`,
+			name: `gicho/ts/${isTypeAware ? 'parser-type-aware' : 'parser'}`,
 			files,
 			...(ignores ? { ignores } : {}),
 			languageOptions: {
@@ -73,7 +70,7 @@ export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, cont
 
 	const items: LinterConfig[] = [
 		{
-			name: 'gicho/typescript/setup',
+			name: 'gicho/ts/setup',
 			plugins: {
 				'@typescript-eslint': pluginTs.plugin,
 			},
@@ -82,7 +79,7 @@ export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, cont
 		...parserItems,
 
 		{
-			name: 'gicho/typescript/rules',
+			name: 'gicho/ts/rules',
 			files,
 			rules: {
 				...pluginTs.configs.eslintRecommended.rules,
@@ -149,14 +146,14 @@ export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, cont
 				'@typescript-eslint/unified-signatures': 'off',
 
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
 	]
 
 	if (typeAware) {
 		items.push({
-			name: 'gicho/typescript/rules-type-aware',
+			name: 'gicho/ts/rules-type-aware',
 			files: typeAwareFiles,
 			ignores: typeAwareIgnores,
 			rules: {
@@ -208,5 +205,5 @@ export const typescript: ConfigGroupFn<'typescript'> = async (options = {}, cont
 		})
 	}
 
-	return onFinalize(items)
+	return onFinalize(items, ctx) ?? items
 }

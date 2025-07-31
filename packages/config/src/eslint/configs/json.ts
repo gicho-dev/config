@@ -13,13 +13,13 @@ import { pluginJsonc } from '../core/plugins'
  *
  * @see https://github.com/ota-meshi/eslint-plugin-jsonc
  */
-export const json: ConfigGroupFn<'json'> = async (options = {}) => {
+export const json: ConfigGroupFn<'json'> = async (opts, ctx) => {
 	const {
 		files = [GLOBS.JSON, GLOBS.JSON5, GLOBS.JSONC],
 		onFinalize = (v) => v,
 		sortPackageJson,
 		sortTsconfigJson,
-	} = options
+	} = opts
 
 	const languageOptions = pluginJsonc.configs['flat/base'][1].languageOptions
 
@@ -31,12 +31,12 @@ export const json: ConfigGroupFn<'json'> = async (options = {}) => {
 			},
 		},
 		{
-			name: 'gicho/jsonc/rules',
+			name: 'gicho/json/rules',
 			files,
 			languageOptions,
 			rules: {
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
 	]
@@ -49,8 +49,12 @@ export const json: ConfigGroupFn<'json'> = async (options = {}) => {
 		items.push(getSortTsconfigJsonItem(sortTsconfigJson === true ? {} : sortTsconfigJson))
 	}
 
-	return onFinalize(items)
+	return onFinalize(items, ctx) ?? items
 }
+
+/* ----------------------------------------
+ *   Internal
+ * ------------------------------------- */
 
 function getSortPackageJsonItem(options: JsonSortPackageJsonOptions = {}): LinterConfig {
 	const {

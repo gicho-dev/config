@@ -46,5 +46,7 @@ export const GLOBS = {
 
 		'**/__snapshots__',
 		'**/coverage',
+
+		'**/eslint.rules.d.ts',
 	],
-}
+} as const

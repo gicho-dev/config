@@ -1,26 +1,26 @@
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 /**
  * Stylistic configuration
  *
  * @see https://eslint.style/rules
  */
-export const stylistic: ConfigGroupFn<'stylistic'> = async (options = {}, context = {}) => {
-	const { externalFormatter } = context ?? {}
+export const stylistic: ConfigGroupFn<'stylistic'> = async (opts, ctx) => {
+	const { externalFormatter } = ctx ?? {}
 
-	const { onFinalize = (v) => v, rules: customRules, ...stylisticCustomizeOptions } = options
+	const { onFinalize = (v) => v, rules: customRules, ...stylisticCustomizeOptions } = opts
 
-	const pluginStylistic = (await import('@stylistic/eslint-plugin')).default
+	const stylisticPlugin = (await import('@stylistic/eslint-plugin')).default
 
-	return onFinalize([
+	const items: LinterConfig[] = [
 		{
 			name: 'gicho/stylistic/rules',
 			plugins: {
-				'@stylistic': pluginStylistic,
+				'@stylistic': stylisticPlugin,
 			},
 			rules: {
 				...(!externalFormatter
-					? pluginStylistic.configs.customize(stylisticCustomizeOptions).rules
+					? stylisticPlugin.configs.customize(stylisticCustomizeOptions).rules
 					: undefined),
 
 				// Enforce consistent spacing after the `//` or `/*` in a comment
@@ -29,5 +29,7 @@ export const stylistic: ConfigGroupFn<'stylistic'> = async (options = {}, contex
 				...customRules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

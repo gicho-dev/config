@@ -6,5 +6,4 @@ pnpm-lock.yaml
 dist
 
 # misc.
-.local
-types.rules.d.ts
+eslint.rules.d.ts

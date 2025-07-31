@@ -1,4 +1,4 @@
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { pluginImport } from '../core/plugins'
 
@@ -7,15 +7,16 @@ import { pluginImport } from '../core/plugins'
  *
  * @see https://github.com/un-ts/eslint-plugin-import-x
  */
-export const importFn: ConfigGroupFn<'import'> = async (options = {}) => {
-	const { onFinalize = (v) => v } = options
+export const importFn: ConfigGroupFn<'import'> = async (opts, ctx) => {
+	const { onFinalize = (v) => v } = opts
 
-	return onFinalize([
+	const items: LinterConfig[] = [
 		{
-			name: 'gicho/import',
+			name: 'gicho/import/rules',
 			plugins: {
 				'import-x': pluginImport,
 			},
+
 			rules: {
 				// Enforce or ban the use of inline type-only markers for named imports.
 				'import-x/consistent-type-specifier-style': 'error',
@@ -41,8 +42,10 @@ export const importFn: ConfigGroupFn<'import'> = async (options = {}) => {
 				'import-x/no-self-import': 'error',
 
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

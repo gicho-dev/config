@@ -1,4 +1,4 @@
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
 import { pluginTs } from '../core/plugins'
@@ -8,32 +8,32 @@ import { pluginTs } from '../core/plugins'
  *
  * @see https://sveltejs.github.io/eslint-plugin-svelte/rules/
  */
-export const svelte: ConfigGroupFn<'svelte'> = async (options = {}, context = {}) => {
-	const { externalFormatter } = context
-	const { typescript: enableTypescript, stylistic } = context.rootOptions ?? {}
+export const svelte: ConfigGroupFn<'svelte'> = async (opts, ctx) => {
+	const { externalFormatter } = ctx
+	const { ts, stylistic } = ctx.rootOptions ?? {}
 
 	const {
-		files = enableTypescript
+		files = ts.enabled
 			? [GLOBS.SVELTE, GLOBS.SVELTE_JS, GLOBS.SVELTE_TS]
 			: [GLOBS.SVELTE, GLOBS.SVELTE_JS],
 		onFinalize = (v) => v,
 		svelteConfig,
-	} = options
+	} = opts
 
-	const pluginSvelte = (await import('eslint-plugin-svelte')).default
+	const sveltePlugin = (await import('eslint-plugin-svelte')).default
 
-	const recommendedRules = pluginSvelte.configs.recommended.at(-1)!.rules!
-	const prettierRules = pluginSvelte.configs.prettier.at(-1)!.rules!
+	const recommendedRules = sveltePlugin.configs.recommended.at(-1)!.rules!
+	const prettierRules = sveltePlugin.configs.prettier.at(-1)!.rules!
 
-	return onFinalize([
+	const items: LinterConfig[] = [
 		// ref: https://github.com/sveltejs/eslint-plugin-svelte/blob/main/packages/eslint-plugin-svelte/src/configs/flat/base.ts
-		...pluginSvelte.configs.base,
+		...sveltePlugin.configs.base,
 
 		{
 			name: 'gicho/svelte/setup',
 			files,
 			languageOptions: {
-				parserOptions: enableTypescript
+				parserOptions: ts.enabled
 					? {
 							extraFileExtensions: ['.svelte'],
 							parser: pluginTs.parser,
@@ -85,8 +85,10 @@ export const svelte: ConfigGroupFn<'svelte'> = async (options = {}, context = {}
 				...(externalFormatter ? prettierRules : undefined),
 
 				// Custom rules
-				...options.rules,
+				...opts.rules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

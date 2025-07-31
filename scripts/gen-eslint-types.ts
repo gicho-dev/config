@@ -7,7 +7,7 @@ import { compile as compileSchema, normalizeIdentifier } from 'json-schema-to-ty
 import { defineConfig } from '../packages/config/src/eslint'
 import { rootPath } from './root.js'
 
-const TYPES_PATH = rootPath('packages/config/src/eslint/core/types.rules.d.ts')
+const TYPES_PATH = rootPath('packages/config/src/eslint/core/eslint.rules.d.ts')
 
 async function generateRuleType(name: string, rule: Rule.RuleModule) {
 	const meta = rule.meta ?? {}
@@ -105,11 +105,12 @@ async function generateEslintTypes() {
 		'// Generated file.',
 		'',
 		`import type { Linter } from 'eslint'`,
+		`import type { ESLintRules } from 'eslint/rules'`,
 		'',
 	]
 
 	exports.push(
-		`export interface RuleOptions extends Linter.RulesRecord {`,
+		`export interface DefaultRules extends Linter.RulesRecord, ESLintRules {`,
 		...(resolvedRules
 			.flatMap(({ jsdoc, name, typeName }) => [
 				jsdoc.length

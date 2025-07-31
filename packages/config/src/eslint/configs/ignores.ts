@@ -10,8 +10,8 @@ import { normalizeOptions } from '../core/utils'
  *
  * @see https://github.com/antfu/eslint-config-flat-gitignore
  */
-export const ignores: ConfigGroupFn<'ignores'> = async (options = {}) => {
-	const { customIgnores = [], gitignore, onFinalize = (v) => v } = options
+export const ignores: ConfigGroupFn<'ignores'> = async (opts, ctx) => {
+	const { customIgnores = [], gitignore, onFinalize = (v) => v } = opts
 
 	const items: LinterConfig[] = []
 
@@ -28,5 +28,5 @@ export const ignores: ConfigGroupFn<'ignores'> = async (options = {}) => {
 		ignores: [...GLOBS.EXCLUDE, ...customIgnores],
 	})
 
-	return onFinalize(items)
+	return onFinalize(items, ctx) ?? items
 }

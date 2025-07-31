@@ -1,6 +1,6 @@
 import type { Linter } from 'eslint'
 
-import type { ConfigGroupFn } from '../core/types'
+import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
 import { pluginTs } from '../core/plugins'
@@ -10,25 +10,26 @@ import { pluginTs } from '../core/plugins'
  *
  * @see https://eslint-react.xyz/docs/rules/overview
  */
-export const react: ConfigGroupFn<'react'> = async (options = {}, context = {}) => {
-	const { typescript: enableTypescript } = context.rootOptions ?? {}
+export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
+	const { ts: enableTypescript } = ctx.rootOptions
 
 	const { files = [GLOBS.SRC], onFinalize = (v) => v } = options
 
-	const [pluginReact, pluginReactHooks] = await Promise.all([
+	const [reactPlugin, reactHooksPlugin] = await Promise.all([
 		import('@eslint-react/eslint-plugin').then((v) => v.default),
 		import('eslint-plugin-react-hooks').then((v) => v.default),
 	])
 
-	return onFinalize([
+	const items: LinterConfig[] = [
 		{
 			name: 'gicho/react/setup',
 			plugins: {
-				...pluginReact.configs.all.plugins,
-				'react-hook': pluginReactHooks,
+				...reactPlugin.configs.all.plugins,
+				'react-hooks': reactHooksPlugin,
 			},
-			settings: { ...pluginReact.configs.recommended.settings },
+			settings: { ...reactPlugin.configs.recommended.settings },
 		},
+
 		{
 			name: 'gicho/react/rules',
 			files,
@@ -44,8 +45,8 @@ export const react: ConfigGroupFn<'react'> = async (options = {}, context = {}) 
 			},
 			rules: {
 				...(enableTypescript
-					? pluginReact.configs['recommended-typescript'].rules
-					: pluginReact.configs.recommended.rules),
+					? reactPlugin.configs['recommended-typescript'].rules
+					: reactPlugin.configs.recommended.rules),
 
 				// recommended rules eslint-plugin-react-hooks
 				// -> https://github.com/facebook/react/tree/main/packages/eslint-plugin-react-hooks/src/rules
@@ -56,5 +57,7 @@ export const react: ConfigGroupFn<'react'> = async (options = {}, context = {}) 
 				...options.rules,
 			},
 		},
-	])
+	]
+
+	return onFinalize(items, ctx) ?? items
 }

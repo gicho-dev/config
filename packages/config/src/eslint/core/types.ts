@@ -1,191 +1,341 @@
 import type { StylisticCustomizeOptions } from '@stylistic/eslint-plugin'
+import type {
+	FlatConfig,
+	ParserOptions as TSParserOptions,
+} from '@typescript-eslint/utils/ts-eslint'
 import type { Linter } from 'eslint'
 import type { FlatGitignoreOptions } from 'eslint-config-flat-gitignore'
-import type { ESLintRules } from 'eslint/rules'
-import type { ConfigWithExtends } from 'typescript-eslint'
 
-import type { RuleOptions } from './types.rules'
+import type { DefaultRules } from './eslint.rules'
 
-export type { Linter }
+/* ----------------------------------------
+ *   General types
+ * ------------------------------------- */
 
-export type Awaitable<T> = T | PromiseLike<T>
+type Awaitable<T> = T | PromiseLike<T>
+type Prettify<T> = { [K in keyof T]: T[K] } & {}
 
-export interface Rules extends ESLintRules, RuleOptions {}
+/* ----------------------------------------
+ *   ESLint types
+ * ------------------------------------- */
 
-export interface LinterConfig extends Omit<Linter.Config<Linter.RulesRecord & Rules>, 'plugins'> {
-	plugins?: Record<string, any>
+export type { ESLintRules } from 'eslint/rules'
+
+export type { DefaultRules, FlatConfig, Linter, TSParserOptions }
+export type RulesRecord = Record<any, Linter.RuleEntry>
+
+export interface LinterConfig<TRules extends RulesRecord = DefaultRules>
+	extends Omit<Linter.Config<RulesRecord & TRules>, 'plugins'> {
+	plugins?: FlatConfig.Plugins
 }
 
-export interface ConfigOptions extends BaseOptions, ConfigOptionsConfigs {}
+/* ----------------------------------------
+ *   Gicho config options
+ * ------------------------------------- */
 
-export interface ConfigOptionsConfigs {
+export interface ConfigOptions<TRules extends RulesRecord>
+	extends BaseOptions<TRules>,
+		RootOptions<TRules>,
+		GroupOptions<TRules> {}
+
+interface RootOptions<TRules extends RulesRecord> {
+	/**
+	 * Whether to enable all rule groups (js, ts, import, etc.) by default.
+	 * Individual groups can still be disabled as needed.
+	 *
+	 * @default false
+	 */
+	enableAllGroups?: boolean
+
+	/**
+	 * Extra custom configs to append to the final configuration.
+	 */
+	extraConfigs?: LinterConfig<TRules>[]
+}
+
+interface GroupOptions<TRules extends RulesRecord> {
+	/* ---------- Core ---------- */
+
 	/**
 	 * Custom disables configuration
-	 *
-	 * @see https://github.com/prettier/eslint-config-prettier
-	 * @default undefined
 	 */
-	disables?: ConfigGroupOptionsMap['disables']
+	disables?: ConfigGroupOptionsMap<TRules>['disables']
+
 	/**
 	 * Custom ignores configuration
 	 *
 	 * @see https://github.com/un-ts/eslint-config-flat-gitignore
-	 * @default undefined
 	 */
-	ignores?: ConfigGroupOptionsMap['ignores']
+	ignores?: Prettify<ConfigGroupOptionsMap<TRules>['ignores']>
+
 	/**
-	 * Custom import configuration
+	 * Configure rules for import/export statements.
 	 *
 	 * @see https://github.com/un-ts/eslint-plugin-import-x
-	 * @default undefined
 	 */
-	import?: ConfigGroupOptionsMap['import']
+	import?: ConfigGroupOptionsMap<TRules>['import']
+
 	/**
-	 * Custom JavaScript configuration
+	 * Configures JavaScript configuration
 	 *
 	 * @see https://eslint.org/docs/latest/rules
-	 * @default undefined
 	 */
-	javascript?: ConfigGroupOptionsMap['javascript']
+	js?: ConfigGroupOptionsMap<TRules>['js']
+
+	/* ---------- Out-of-the-box ---------- */
+
 	/**
-	 * Enable JSDoc rules
+	 * Enables JSDoc-related rules.
+	 * Pass `true` for default options or an object for custom options.
 	 *
+	 * @default true
 	 * @see https://github.com/gajus/eslint-plugin-jsdoc
-	 * @default true
 	 */
-	jsdoc?: boolean | ConfigGroupOptionsMap['jsdoc']
+	jsdoc?: boolean | ConfigGroupOptionsMap<TRules>['jsdoc']
+
 	/**
-	 * Enable JSON/JSON5/JSONC support
+	 * Enables rules related to JSON, JSON5 and JSONC.
+	 * Pass `true` for default options or an object for custom options.
 	 *
-	 * @see https://github.com/ota-meshi/eslint-plugin-jsonc
 	 * @default false
+	 * @see https://github.com/ota-meshi/eslint-plugin-jsonc
 	 */
-	json?: boolean | ConfigGroupOptionsMap['json']
+	json?: boolean | ConfigGroupOptionsMap<TRules>['json']
+
 	/**
-	 * Enable Perfectionist rules
+	 * Enables `perfectionist` plugin rules.
+	 * Pass `true` for default options or an object for custom options.
 	 *
-	 * @see https://perfectionist.dev/rules
 	 * @default true
+	 * @see https://perfectionist.dev/rules
 	 */
-	perfectionist?: boolean | ConfigGroupOptionsMap['perfectionist']
+	perfectionist?: boolean | ConfigGroupOptionsMap<TRules>['perfectionist']
+
 	/**
-	 * Enable React rules
+	 * Integrates Prettier with ESLint and manages rule conflicts.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * @default false
+	 * @see https://github.com/prettier/eslint-config-prettier
+	 */
+	prettier?: boolean | ConfigGroupOptionsMap<TRules>['prettier']
+
+	/**
+	 * Enables `stylistic` plugin rules.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * Requires packages:
+	 * - `@stylistic/eslint-plugin`
+	 *
+	 * @default true
+	 * @see https://eslint.style/rules
+	 */
+	stylistic?: boolean | ConfigGroupOptionsMap<TRules>['stylistic']
+
+	/**
+	 * Enables TypeScript support.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * @default true
+	 * @see https://typescript-eslint.io/rules
+	 */
+	ts?: boolean | ConfigGroupOptionsMap<TRules>['ts']
+
+	/* ---------- Optional ---------- */
+
+	/**
+	 * Enables React rules.
+	 * Pass `true` for default options or an object for custom options.
 	 *
 	 * Requires packages:
 	 * - `@eslint-react/eslint-plugin`
 	 * - `eslint-plugin-react-hooks`
 	 *
+	 * @default false
 	 * @see https://eslint-react.xyz/docs/rules/overview
+	 */
+	react?: boolean | ConfigGroupOptionsMap<TRules>['react']
+
+	/**
+	 * Enables Svelte rules.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * Requires packages:
+	 * - `eslint-plugin-svelte`
+	 *
 	 * @default false
-	 */
-	react?: boolean | ConfigGroupOptionsMap['react']
-	/**
-	 * Enable Stylistic rules
-	 *
-	 * Requires packages:
-	 * - `@stylistic/eslint-plugin`
-	 *
-	 * @see https://eslint.style/rules
-	 * @default true
-	 */
-	stylistic?: boolean | ConfigGroupOptionsMap['stylistic']
-	/**
-	 * Enable Svelte rules
-	 *
-	 * Requires packages:
 	 * @see https://sveltejs.github.io/eslint-plugin-svelte/rules
-	 * @default false
 	 */
-	svelte?: boolean | ConfigGroupOptionsMap['svelte']
-	/**
-	 * Enable TypeScript support
-	 *
-	 * @see https://typescript-eslint.io/rules
-	 * @default true
-	 */
-	typescript?: boolean | ConfigGroupOptionsMap['typescript']
+	svelte?: boolean | ConfigGroupOptionsMap<TRules>['svelte']
 }
 
-export type ConfigGroupFn<K extends ConfigGroupName> = (
-	options?: ConfigGroupOptionsMap[K],
-	context?: ConfigGroupFnContext,
-) => ConfigGroupFnReturn
+export type ResolvedConfigOptions<TRules extends RulesRecord> = {
+	[K: string]: Record<string, any> & { enabled: boolean }
+} & ({
+	[K in ConfigGroupName]: ConfigGroupOptionsMap<TRules>[K] & { enabled: boolean }
+} & Required<RootOptions<TRules>>)
 
-export interface ConfigGroupFnContext {
-	enablePrettier?: boolean
+/* ----------------------------------------
+ *   Config groups
+ * ------------------------------------- */
+
+export type ConfigGroupFn<K extends ConfigGroupName, TRules extends RulesRecord = DefaultRules> = (
+	opts: ConfigGroupOptionsMap<TRules>[K],
+	ctx: ConfigGroupFnContext<TRules>,
+) => ConfigGroupFnReturn<TRules>
+
+// for string keyed config groups
+export type IConfigGroupFn<TRules extends RulesRecord = DefaultRules> = (
+	opts: Record<string, any>,
+	ctx: ConfigGroupFnContext<TRules>,
+) => ConfigGroupFnReturn<TRules>
+
+export type ConfigGroupFnReturn<TRules extends RulesRecord> = Awaitable<LinterConfig<TRules>[]>
+
+export interface ConfigGroupFnContext<TRules extends RulesRecord> {
 	externalFormatter?: boolean
-	rootOptions?: ConfigOptions
+	rootOptions: ResolvedConfigOptions<TRules>
 }
 
-export type ConfigGroupFnReturn = Awaitable<LinterConfig[]>
+export type ConfigGroupName = keyof ConfigGroupOptionsMap<DefaultRules>
 
-export type ConfigGroupName = keyof ConfigGroupOptionsMap
+export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
+	disables: BaseOptions<TRules>
 
-export interface ConfigGroupOptionsMap {
-	disables: DisablesOptions
-	ignores: IgnoresOptions
-	import: BaseOptionsWithRules
-	javascript: BaseOptionsWithRules
-	jsdoc: BaseOptionsWithRules
-	json: JsonOptions
-	perfectionist: BaseOptionsWithRules
-	react: ReactOptions
-	stylistic: StylisticOptions
-	svelte: SvelteOptions
-	typescript: TypeScriptOptions
+	ignores: BaseOptions<TRules> & {
+		/**
+		 * Custom ignore path patterns
+		 */
+		customIgnores?: string[]
+		/**
+		 * Enable gitignore support.
+		 *
+		 * Passing an object to configure the options.
+		 *
+		 * @see https://github.com/antfu/eslint-config-flat-gitignore
+		 * @default false
+		 */
+		gitignore?: boolean | FlatGitignoreOptions
+	}
+
+	import: BaseOptionsWithRules<TRules>
+
+	js: BaseOptionsWithRules<TRules> & {
+		/**
+		 * Specifies which rule preset to use from the `@eslint/js` plugin.
+		 *
+		 * - `false` - No rules are applied.
+		 * - `'default'` - Enables the default (opinionated) rules.
+		 * - `'all'` - Enables all eslint core rules.
+		 * - `'recommended'` - Enables the recommended rules of `@eslint/js` plugin.
+		 *
+		 * @default 'default'
+		 * @see https://eslint.org/docs/latest/rules
+		 */
+		preset?: false | 'default' | 'all' | 'recommended'
+	}
+
+	jsdoc: BaseOptionsWithRules<TRules>
+
+	json: BaseOptionsWithRules<TRules> &
+		FilesOptions & {
+			/**
+			 * Whether to apply sorting rules for `package.json` attribute keys.
+			 * @default false
+			 */
+			sortPackageJson?: boolean | JsonSortPackageJsonOptions
+			/**
+			 * Whether to apply sorting rules for `tsconfig.json`, `tsconfig.*.json` attribute keys.
+			 * @default false
+			 */
+			sortTsconfigJson?: boolean | JsonSortTsconfigJsonOptions
+		}
+
+	perfectionist: BaseOptionsWithRules<TRules> & {
+		/**
+		 * Specifies which rule preset to use from the `perfectionist` plugin.
+		 *
+		 * - `false` - No rules are applied.
+		 * - `'default'` - Enables the default (opinionated) rules.
+		 * - `Others` - Use a named preset from the `perfectionist` plugin.
+		 *
+		 * @default 'default'
+		 * @see https://perfectionist.dev/configs
+		 */
+		preset?:
+			| false
+			| 'default'
+			| 'recommended-alphabetical'
+			| 'recommended-natural'
+			| 'recommended-line-length'
+			| 'recommended-custom'
+	}
+
+	prettier: BaseOptionsWithRules<TRules> & {
+		/**
+		 * Whether to disable rules that conflict with Prettier formatting.
+		 *
+		 * @default false
+		 * @see https://github.com/prettier/eslint-config-prettier
+		 */
+		disableConflictingRules?: boolean
+	}
+
+	react: BaseOptionsWithRules<TRules> & FilesOptions
+
+	stylistic: BaseOptionsWithRules<TRules> & Omit<StylisticCustomizeOptions, 'pluginName' | 'jsx'>
+
+	svelte: BaseOptionsWithRules<TRules> &
+		FilesOptions & {
+			/**
+			 * Svelte configuration
+			 */
+			svelteConfig?: Record<string, any>
+		}
+
+	ts: BaseOptionsWithRules<TRules> &
+		FilesOptions & {
+			/**
+			 * Additional glob patterns to apply to the config
+			 */
+			extraFiles?: string[]
+			parserOptions?: TSParserOptions
+			typeAware?: TypeAwareOptions<TRules>
+		}
 }
 
-export type FinalizeHookHandler = (configs: LinterConfig[]) => ConfigGroupFnReturn
+/* ----------------------------------------
+ *   Each group options
+ * ------------------------------------- */
 
-export interface BaseOptions {
-	/** Hook to apply final adjustments to the config array before it's finalized */
-	onFinalize?: FinalizeHookHandler
-}
-export interface BaseOptionsWithRules extends BaseOptions, RulesOptions {}
-
-export interface DisablesOptions extends BaseOptions {
+interface BaseOptions<TRules extends RulesRecord> {
 	/**
-	 * Whether to disable rules that conflict with Prettier
-	 *
-	 * @see https://github.com/prettier/eslint-config-prettier
-	 * @default false
+	 * Hook to apply final adjustments to the config array before it's finalized
 	 */
-	prettier?: boolean
+	onFinalize?(
+		items: LinterConfig<TRules>[],
+		ctx: ConfigGroupFnContext<TRules>,
+	): ConfigGroupFnReturn<TRules>
 }
+type BaseOptionsWithRules<TRules extends RulesRecord> = BaseOptions<TRules> & RulesOptions<TRules>
 
-export interface FilesOptions {
-	/** Additional glob patterns to apply to the config */
+interface FilesOptions {
+	/**
+	 * Specifies glob patterns to apply to the config
+	 */
 	files?: string[]
 }
 
-export interface IgnoresOptions extends BaseOptions {
+interface RulesOptions<TRules extends RulesRecord> {
 	/**
-	 * Custom ignore path patterns
+	 * Specifies rules to add or override.
 	 */
-	customIgnores?: string[]
-	/**
-	 * Enable gitignore support.
-	 *
-	 * Passing an object to configure the options.
-	 *
-	 * @see https://github.com/antfu/eslint-config-flat-gitignore
-	 * @default false
-	 */
-	gitignore?: boolean | FlatGitignoreOptions
+	rules?: LinterConfig<TRules>['rules']
 }
 
-export interface JsonOptions extends BaseOptionsWithRules, FilesOptions {
-	/**
-	 * Whether to apply sorting rules for `package.json` attribute keys.
-	 * @default false
-	 */
-	sortPackageJson?: boolean | JsonSortPackageJsonOptions
-	/**
-	 * Whether to apply sorting rules for `tsconfig.json`, `tsconfig.*.json` attribute keys.
-	 * @default false
-	 */
-	sortTsconfigJson?: boolean | JsonSortTsconfigJsonOptions
-}
+/* ----------------------------------------
+ *   Sub-options
+ * ------------------------------------- */
 
 export interface JsonSortPackageJsonOptions {
 	/**
@@ -218,35 +368,8 @@ export interface JsonSortTsconfigJsonOptions {
 	compilerOptionsTopKeys?: string[]
 }
 
-export interface ReactOptions extends BaseOptionsWithRules, FilesOptions {}
-
-export interface RulesOptions {
-	/** Rules to add or override */
-	rules?: LinterConfig['rules']
-}
-
-export interface StylisticOptions
-	extends BaseOptionsWithRules,
-		Omit<StylisticCustomizeOptions, 'pluginName' | 'jsx'> {}
-
-export interface SvelteOptions extends BaseOptionsWithRules, FilesOptions {
-	/**
-	 * Svelte configuration
-	 */
-	svelteConfig?: Record<string, any>
-}
-
-export interface TypeScriptOptions extends BaseOptionsWithRules, FilesOptions {
-	parserOptions?: TSParserOptions
-	typeAware?: TypeAwareOptions
-}
-
-export interface TypeAwareOptions extends FilesOptions, RulesOptions {
+interface TypeAwareOptions<TRules extends RulesRecord> extends FilesOptions, RulesOptions<TRules> {
 	ignores?: string[]
 	parserOptions?: TSParserOptions
 	tsconfigPath: string
 }
-
-type TSFlatConfig = Omit<ConfigWithExtends, 'extends'>
-type TSLanguageOptions = Required<TSFlatConfig>['languageOptions']
-export type TSParserOptions = Required<TSLanguageOptions>['parserOptions']
