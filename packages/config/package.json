@@ -1,6 +1,6 @@
 {
 	"name": "@gicho/config",
-	"version": "0.0.1-alpha.0",
+	"version": "0.0.1-alpha.2",
 	"description": "Reusable base ESLint, Prettier and TSConfig for modern TS/JS projects.",
 	"keywords": [
 		"config",
@@ -13,9 +13,9 @@
 	"author": "Lucas Choi",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/gicho-dev/gicho"
+		"url": "https://github.com/gicho-dev/config"
 	},
-	"homepage": "https://github.com/gicho-dev/gicho",
+	"homepage": "https://github.com/gicho-dev/config",
 	"sideEffects": false,
 	"type": "module",
 	"exports": {
@@ -35,7 +35,6 @@
 	},
 	"files": [
 		"dist",
-		"src",
 		"tsconfig.base.json",
 		"tsconfig.react.json"
 	],
