@@ -1,8 +1,8 @@
-import type { ESLint, Rule } from 'eslint'
+import type { Rule } from 'eslint'
 
 import fs from 'node:fs/promises'
 
-import { configs } from './gen-eslint-types.js'
+import { defineConfig } from '../packages/config/src/eslint'
 import { rootPath } from './root.js'
 
 const TEST_PATH = (pluginName: string) => rootPath(`.local/rules.${pluginName}.ts`)
@@ -23,7 +23,10 @@ function generateRuleLines(pluginName: string, name: string, rule: Rule.RuleModu
 	]
 		.filter(Boolean)
 		.join('')
-	if (states) states = `${states} `
+
+	if (states) {
+		states = `${states} `
+	}
 
 	let defaultValue = `'error'`
 	switch (pluginName) {
@@ -40,27 +43,31 @@ function generateRuleLines(pluginName: string, name: string, rule: Rule.RuleModu
 async function generateEslintRulesObj(pluginName: string) {
 	const rules: [name: string, rule: Rule.RuleModule][] = []
 
-	await Promise.all(
-		configs.map(async (config) => {
-			const items = await config()
-			for (const item of items) {
-				if (!item.plugins) continue
+	const configs = await defineConfig({ enableAllGroups: true })
 
-				for (const [pName, plugin] of Object.entries(
-					item.plugins as Record<string, ESLint.Plugin>,
-				)) {
-					if (pName !== pluginName) continue
+	for (const config of configs) {
+		const plugins = config.plugins
+		if (!plugins) {
+			continue
+		}
 
-					for (const [ruleName, rule] of Object.entries(plugin.rules || {})) {
-						if (!rule.meta) continue
+		for (const pluginName in plugins) {
+			const plugin = plugins[pluginName]
+			const pluginRules = plugin.rules || {}
 
-						const name = pName ? `${pName}/${ruleName}` : ruleName
-						rules.push([name, rule])
-					}
+			for (const ruleName in pluginRules) {
+				const rule = pluginRules[ruleName]
+
+				if (!(rule as { meta: unknown }).meta) {
+					continue
 				}
+
+				const name = pluginName ? `${pluginName}/${ruleName}` : ruleName
+				rules.push([name, rule as Rule.RuleModule])
 			}
-		}),
-	)
+		}
+	}
+
 	rules.sort(([a], [b]) => a.localeCompare(b))
 
 	const resolvedLines = rules.map(([name, rule]) => generateRuleLines(pluginName, name, rule))

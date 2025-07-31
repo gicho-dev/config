@@ -1,47 +1,27 @@
 import type { JSONSchema4 } from '@typescript-eslint/utils/json-schema'
-import type { ESLint, Rule } from 'eslint'
+import type { Rule } from 'eslint'
 
 import fs from 'node:fs/promises'
 import { compile as compileSchema, normalizeIdentifier } from 'json-schema-to-typescript-lite'
 
-import {
-	disables,
-	ignores,
-	importFn,
-	javascript,
-	jsdoc,
-	json,
-	perfectionist,
-	react,
-	stylistic,
-	svelte,
-	typescript,
-} from '../packages/config/src/eslint/configs'
+import { defineConfig } from '../packages/config/src/eslint'
 import { rootPath } from './root.js'
 
 const TYPES_PATH = rootPath('packages/config/src/eslint/core/types.rules.d.ts')
-
-export const configs = [
-	disables,
-	ignores,
-	importFn,
-	javascript,
-	jsdoc,
-	json,
-	perfectionist,
-	react,
-	stylistic,
-	svelte,
-	typescript,
-]
 
 async function generateRuleType(name: string, rule: Rule.RuleModule) {
 	const meta = rule.meta ?? {}
 
 	const jsdoc: string[] = []
-	if (meta.docs?.description) jsdoc.push(meta.docs.description)
-	if (meta.docs?.url) jsdoc.push(`@see ${meta.docs.url}`)
-	if (meta.deprecated) jsdoc.push('@deprecated')
+	if (meta.docs?.description) {
+		jsdoc.push(meta.docs.description)
+	}
+	if (meta.docs?.url) {
+		jsdoc.push(`@see ${meta.docs.url}`)
+	}
+	if (meta.deprecated) {
+		jsdoc.push('@deprecated')
+	}
 
 	if (!meta.schema || (Array.isArray(meta.schema) && !meta.schema.length)) {
 		return { jsdoc, name, typeName: '[]', typeDeclarations: [] }
@@ -59,7 +39,9 @@ async function generateRuleType(name: string, rule: Rule.RuleModule) {
 		const compiled = await compileSchema(schema, typeName, {
 			customName(schema, keyName) {
 				const resolved = schema.title || schema.$id || keyName
-				if (resolved === typeName) return typeName
+				if (resolved === typeName) {
+					return typeName
+				}
 				return resolved ? `_${normalizeIdentifier(`${typeName}_${resolved}`)}` : undefined!
 			},
 			strictIndexSignatures: true,
@@ -89,32 +71,38 @@ async function generateRuleType(name: string, rule: Rule.RuleModule) {
 async function generateEslintTypes() {
 	const rules: [name: string, rule: Rule.RuleModule][] = []
 
-	await Promise.all(
-		configs.map(async (config) => {
-			const items = await config()
-			for (const item of items) {
-				if (!item.plugins) continue
+	const configs = await defineConfig({ enableAllGroups: true })
 
-				for (const [pluginName, plugin] of Object.entries(
-					item.plugins as Record<string, ESLint.Plugin>,
-				)) {
-					for (const [ruleName, rule] of Object.entries(plugin.rules || {})) {
-						if (!rule.meta) continue
+	for (const config of configs) {
+		const plugins = config.plugins
+		if (!plugins) {
+			continue
+		}
 
-						const name = pluginName ? `${pluginName}/${ruleName}` : ruleName
-						rules.push([name, rule])
-					}
+		for (const pluginName in plugins) {
+			const plugin = plugins[pluginName]
+			const pluginRules = plugin.rules || {}
+
+			for (const ruleName in pluginRules) {
+				const rule = pluginRules[ruleName]
+
+				if (!(rule as { meta: unknown }).meta) {
+					continue
 				}
+
+				const name = pluginName ? `${pluginName}/${ruleName}` : ruleName
+				rules.push([name, rule as Rule.RuleModule])
 			}
-		}),
-	)
+		}
+	}
+
 	rules.sort(([a], [b]) => a.localeCompare(b))
 
 	const resolvedRules = await Promise.all(rules.map(([name, rule]) => generateRuleType(name, rule)))
 
 	const exports: string[] = [
-		`/* eslint-disable */`,
-		`/* prettier-ignore */`,
+		// `/* eslint-disable */`,
+		'// Generated file.',
 		'',
 		`import type { Linter } from 'eslint'`,
 		'',
