@@ -26,5 +26,6 @@
 			"*.tsbuildinfo": true,
 		},
 		"typescript.preferences.importModuleSpecifier": "project-relative",
+		"typescript.tsdk": "ROOT/node_modules/typescript/lib",
 	},
 }
