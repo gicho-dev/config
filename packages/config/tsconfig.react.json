@@ -1,4 +1,5 @@
 {
+	// Visit https://www.typescriptlang.org/tsconfig for more information
 	"extends": "./tsconfig.base.json",
 	"compilerOptions": {
 		"jsx": "react-jsx"

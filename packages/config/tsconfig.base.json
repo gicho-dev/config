@@ -1,9 +1,11 @@
 {
+	// Visit https://www.typescriptlang.org/tsconfig for more information
 	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
+		//
+		"target": "esnext",
+		"module": "esnext",
 		"moduleResolution": "bundler",
-		"lib": ["DOM", "DOM.Iterable", "ESNext"],
+		"lib": ["esnext", "dom"],
 
 		"allowImportingTsExtensions": true,
 		"allowJs": true,
