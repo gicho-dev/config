@@ -1,3 +1,5 @@
+import type { Awaitable } from './types'
+
 import { join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 
@@ -22,4 +24,11 @@ export function normalizeOptions<T extends Record<string, any>>(
 	}
 	const enabled = !!opts || defaultEnabled
 	return { ...(opts as T), enabled }
+}
+
+export async function unwrapDefault<T>(
+	m: Awaitable<T>,
+): Promise<T extends { default: infer U } ? U : T> {
+	const resolved = await m
+	return (resolved as any).default || resolved
 }

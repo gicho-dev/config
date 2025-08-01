@@ -16,9 +16,11 @@ import { importFn } from '../configs/import'
 import { js } from '../configs/js'
 import { jsdoc } from '../configs/jsdoc'
 import { json } from '../configs/json'
+import { node } from '../configs/node'
 import { perfectionist } from '../configs/perfectionist'
 import { prettier } from '../configs/prettier'
 import { react } from '../configs/react'
+import { regexp } from '../configs/regexp'
 import { stylistic } from '../configs/stylistic'
 import { svelte } from '../configs/svelte'
 import { ts } from '../configs/ts'
@@ -43,9 +45,11 @@ export async function defineConfig<TRules extends RulesRecord = DefaultRules>(
 		js,
 		jsdoc,
 		json,
+		node,
 		perfectionist,
 		prettier,
 		react,
+		regexp,
 		stylistic,
 		svelte,
 		ts,
@@ -63,7 +67,9 @@ export async function defineConfig<TRules extends RulesRecord = DefaultRules>(
 		// semi-core
 		ts: detected.ts,
 		jsdoc: true,
+		node: true,
 		perfectionist: true,
+		regexp: true,
 		stylistic: true,
 
 		// optional

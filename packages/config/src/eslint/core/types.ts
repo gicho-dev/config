@@ -12,7 +12,7 @@ import type { DefaultRules } from './eslint.rules'
  *   General types
  * ------------------------------------- */
 
-type Awaitable<T> = T | PromiseLike<T>
+export type Awaitable<T> = T | PromiseLike<T>
 type Prettify<T> = { [K in keyof T]: T[K] } & {}
 
 /* ----------------------------------------
@@ -119,6 +119,15 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * @see https://github.com/prettier/eslint-config-prettier
 	 */
 	prettier?: boolean | ConfigGroupOptionsMap<TRules>['prettier']
+
+	/**
+	 * Enables `regexp` plugin rules.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * @default false
+	 * @see https://ota-meshi.github.io/eslint-plugin-regexp/rules/
+	 */
+	regexp?: boolean | ConfigGroupOptionsMap<TRules>['regexp']
 
 	/**
 	 * Enables `stylistic` plugin rules.
@@ -258,6 +267,16 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 			sortTsconfigJson?: boolean | JsonSortTsconfigJsonOptions
 		}
 
+	node: BaseOptionsWithRules<TRules> & {
+		/**
+		 * Specifies which rule preset to use from the `eslint-plugin-n` plugin.
+		 *
+		 * @default 'default'
+		 * @see https://github.com/eslint-community/eslint-plugin-n
+		 */
+		preset?: false | 'default' | 'all' | 'recommended'
+	}
+
 	perfectionist: BaseOptionsWithRules<TRules> & {
 		/**
 		 * Specifies which rule preset to use from the `perfectionist` plugin.
@@ -289,6 +308,16 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 	}
 
 	react: BaseOptionsWithRules<TRules> & FilesOptions
+
+	regexp: BaseOptionsWithRules<TRules> & {
+		/**
+		 * Specifies which rule preset to use from the `regexp` plugin.
+		 *
+		 * @default 'default'
+		 * @see https://ota-meshi.github.io/eslint-plugin-regexp/user-guide/
+		 */
+		preset?: false | 'default' | 'all' | 'recommended'
+	}
 
 	stylistic: BaseOptionsWithRules<TRules> & Omit<StylisticCustomizeOptions, 'pluginName' | 'jsx'>
 

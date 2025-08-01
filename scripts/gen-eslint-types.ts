@@ -57,7 +57,7 @@ async function generateRuleType(name: string, rule: Rule.RuleModule) {
 	lines
 		.join('\n')
 		.split('\n')
-		.map((line) => line.replace(/^(export )/, ''))
+		.map((line) => line.replace(/^export /, ''))
 		.filter(Boolean)
 
 	return {
