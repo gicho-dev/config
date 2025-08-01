@@ -22,7 +22,6 @@ export const node: ConfigGroupFn<'node'> = async (opts, ctx) => {
 				'n/no-new-require': 'error',
 				'n/no-path-concat': 'error',
 				'n/prefer-global/buffer': 'error',
-				'n/prefer-global/process': 'error',
 				'n/prefer-node-protocol': 'error',
 				'n/process-exit-as-throw': 'error',
 			}

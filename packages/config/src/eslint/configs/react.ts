@@ -12,9 +12,8 @@ import { tsParser } from './ts'
  * @see https://eslint-react.xyz/docs/rules/overview
  */
 export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
-	const { ts } = ctx.rootOptions
-
 	const { files = [GLOBS.SRC], onFinalize = (v) => v } = options
+	const { ts } = ctx.rootOptions
 
 	const [reactPlugin, reactHooksPlugin] = await Promise.all([
 		unwrapDefault(import('@eslint-react/eslint-plugin')),
