@@ -127,6 +127,10 @@ export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 				globals: {
 					...globals.browser,
 					...globals.node,
+					...globals.es2024,
+
+					// custom globals
+					...opts.globals,
 				},
 				parserOptions: {
 					ecmaFeatures: {

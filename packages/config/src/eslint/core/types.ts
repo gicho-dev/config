@@ -238,6 +238,12 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 
 	js: BaseOptionsWithRules<TRules> & {
 		/**
+		 * Specifies additional global variables to be used in the config.
+		 *
+		 * @see https://eslint.org/docs/latest/use/configure/language-options#specifying-globals
+		 */
+		globals?: Linter.Globals
+		/**
 		 * Specifies which rule preset to use from the `@eslint/js` plugin.
 		 *
 		 * - `false` - No rules are applied.
