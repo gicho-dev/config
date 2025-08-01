@@ -64,6 +64,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	/**
 	 * Custom ignores configuration
 	 *
+	 * @default true
 	 * @see https://github.com/un-ts/eslint-config-flat-gitignore
 	 */
 	ignores?: Prettify<ConfigGroupOptionsMap<TRules>['ignores']>
@@ -71,6 +72,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	/**
 	 * Configure rules for import/export statements.
 	 *
+	 * @default true
 	 * @see https://github.com/un-ts/eslint-plugin-import-x
 	 */
 	import?: ConfigGroupOptionsMap<TRules>['import']
@@ -94,15 +96,6 @@ interface GroupOptions<TRules extends RulesRecord> {
 	jsdoc?: boolean | ConfigGroupOptionsMap<TRules>['jsdoc']
 
 	/**
-	 * Enables rules related to JSON, JSON5 and JSONC.
-	 * Pass `true` for default options or an object for custom options.
-	 *
-	 * @default false
-	 * @see https://github.com/ota-meshi/eslint-plugin-jsonc
-	 */
-	json?: boolean | ConfigGroupOptionsMap<TRules>['json']
-
-	/**
 	 * Enables `perfectionist` plugin rules.
 	 * Pass `true` for default options or an object for custom options.
 	 *
@@ -115,7 +108,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * Integrates Prettier with ESLint and manages rule conflicts.
 	 * Pass `true` for default options or an object for custom options.
 	 *
-	 * @default false
+	 * @default auto-detected based on the dependencies
 	 * @see https://github.com/prettier/eslint-config-prettier
 	 */
 	prettier?: boolean | ConfigGroupOptionsMap<TRules>['prettier']
@@ -124,7 +117,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * Enables `regexp` plugin rules.
 	 * Pass `true` for default options or an object for custom options.
 	 *
-	 * @default false
+	 * @default true
 	 * @see https://ota-meshi.github.io/eslint-plugin-regexp/rules/
 	 */
 	regexp?: boolean | ConfigGroupOptionsMap<TRules>['regexp']
@@ -145,12 +138,33 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * Enables TypeScript support.
 	 * Pass `true` for default options or an object for custom options.
 	 *
-	 * @default true
+	 * @default auto-detected based on the dependencies
 	 * @see https://typescript-eslint.io/rules
 	 */
 	ts?: boolean | ConfigGroupOptionsMap<TRules>['ts']
 
 	/* ---------- Optional ---------- */
+
+	/**
+	 * Enables rules related to JSON, JSON5 and JSONC.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * @default false
+	 * @see https://github.com/ota-meshi/eslint-plugin-jsonc
+	 */
+	json?: boolean | ConfigGroupOptionsMap<TRules>['json']
+
+	/**
+	 * Enables JSX rules.
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * Requires packages:
+	 * - `eslint-plugin-jsx-a11y`
+	 *
+	 * @default false
+	 * @see https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
+	 */
+	jsx?: boolean | ConfigGroupOptionsMap<TRules>['jsx']
 
 	/**
 	 * Enables React rules.
@@ -160,7 +174,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * - `@eslint-react/eslint-plugin`
 	 * - `eslint-plugin-react-hooks`
 	 *
-	 * @default false
+	 * @default auto-detected based on the dependencies
 	 * @see https://eslint-react.xyz/docs/rules/overview
 	 */
 	react?: boolean | ConfigGroupOptionsMap<TRules>['react']
@@ -172,7 +186,7 @@ interface GroupOptions<TRules extends RulesRecord> {
 	 * Requires packages:
 	 * - `eslint-plugin-svelte`
 	 *
-	 * @default false
+	 * @default auto-detected based on the dependencies
 	 * @see https://sveltejs.github.io/eslint-plugin-svelte/rules
 	 */
 	svelte?: boolean | ConfigGroupOptionsMap<TRules>['svelte']
@@ -273,6 +287,20 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 			sortTsconfigJson?: boolean | JsonSortTsconfigJsonOptions
 		}
 
+	jsx: BaseOptionsWithRules<TRules> & {
+		a11y?:
+			| boolean
+			| (RulesOptions<TRules> & {
+					/**
+					 * Specifies which rule preset to use from the `eslint-plugin-jsx-a11y` plugin.
+					 *
+					 * @default 'default'
+					 * @see https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
+					 */
+					preset?: false | 'default' | 'recommended' | 'strict'
+			  })
+	}
+
 	node: BaseOptionsWithRules<TRules> & {
 		/**
 		 * Specifies which rule preset to use from the `eslint-plugin-n` plugin.
@@ -285,7 +313,7 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 
 	perfectionist: BaseOptionsWithRules<TRules> & {
 		/**
-		 * Specifies which rule preset to use from the `perfectionist` plugin.
+		 * Specifies which rule preset to use from the `eslint-plugin-perfectionist` plugin.
 		 *
 		 * - `false` - No rules are applied.
 		 * - `'default'` - Enables the default (opinionated) rules.
@@ -317,7 +345,7 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 
 	regexp: BaseOptionsWithRules<TRules> & {
 		/**
-		 * Specifies which rule preset to use from the `regexp` plugin.
+		 * Specifies which rule preset to use from the `eslint-plugin-regexp` plugin.
 		 *
 		 * @default 'default'
 		 * @see https://ota-meshi.github.io/eslint-plugin-regexp/user-guide/
