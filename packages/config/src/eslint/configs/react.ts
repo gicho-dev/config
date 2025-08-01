@@ -3,6 +3,7 @@ import type { Linter } from 'eslint'
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
+import { unwrapDefault } from '../core/utils'
 import { tsParser } from './ts'
 
 /**
@@ -16,8 +17,8 @@ export const react: ConfigGroupFn<'react'> = async (options, ctx) => {
 	const { files = [GLOBS.SRC], onFinalize = (v) => v } = options
 
 	const [reactPlugin, reactHooksPlugin] = await Promise.all([
-		import('@eslint-react/eslint-plugin').then((v) => v.default),
-		import('eslint-plugin-react-hooks').then((v) => v.default),
+		unwrapDefault(import('@eslint-react/eslint-plugin')),
+		unwrapDefault(import('eslint-plugin-react-hooks')),
 	])
 
 	const items: LinterConfig[] = [

@@ -1,5 +1,7 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
+import { unwrapDefault } from '../core/utils'
+
 /**
  * Stylistic configuration
  *
@@ -10,7 +12,7 @@ export const stylistic: ConfigGroupFn<'stylistic'> = async (opts, ctx) => {
 
 	const { onFinalize = (v) => v, rules: customRules, ...stylisticCustomizeOptions } = opts
 
-	const stylisticPlugin = (await import('@stylistic/eslint-plugin')).default
+	const stylisticPlugin = await unwrapDefault(import('@stylistic/eslint-plugin'))
 
 	const items: LinterConfig[] = [
 		{

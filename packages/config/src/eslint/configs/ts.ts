@@ -1,11 +1,8 @@
 import type { ConfigGroupFn, Linter, LinterConfig } from '../core/types'
 
-import tsPlugin from 'typescript-eslint'
-
 import { GLOBS } from '../core/constants'
 import { normalizeOptions } from '../core/utils'
-
-export { tsPlugin }
+import { tsPlugin } from '../plugins'
 
 /** TypeScript parser */
 export const tsParser = tsPlugin.parser

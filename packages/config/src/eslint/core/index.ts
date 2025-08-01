@@ -1,7 +1,5 @@
-/* ----------------------------------------
- *   Types
- * ------------------------------------- */
-
+export * from './config'
+export * from './constants'
 export type {
 	ConfigOptions,
 	DefaultRules,
@@ -11,17 +9,3 @@ export type {
 	LinterConfig,
 	RulesRecord,
 } from './types'
-
-/* ----------------------------------------
- *   Objects
- * ------------------------------------- */
-
-export { tsPlugin } from '../configs/ts'
-export * from './config'
-export * from './constants'
-
-/* ----------------------------------------
- *   External
- * ------------------------------------- */
-
-export { default as globals } from 'globals'

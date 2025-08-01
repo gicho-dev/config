@@ -5,9 +5,8 @@ import type {
 	LinterConfig,
 } from '../core/types'
 
-import jsoncPlugin from 'eslint-plugin-jsonc'
-
 import { GLOBS } from '../core/constants'
+import { unwrapDefault } from '../core/utils'
 
 /**
  * JSON configuration
@@ -21,6 +20,8 @@ export const json: ConfigGroupFn<'json'> = async (opts, ctx) => {
 		sortPackageJson,
 		sortTsconfigJson,
 	} = opts
+
+	const jsoncPlugin = await unwrapDefault(import('eslint-plugin-jsonc'))
 
 	const languageOptions = jsoncPlugin.configs['flat/base'][1].languageOptions
 

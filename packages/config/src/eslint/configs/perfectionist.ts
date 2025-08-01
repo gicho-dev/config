@@ -1,6 +1,6 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
-import perfectionistPlugin from 'eslint-plugin-perfectionist'
+import { unwrapDefault } from '../core/utils'
 
 /**
  * Perfectionist configuration
@@ -10,6 +10,8 @@ import perfectionistPlugin from 'eslint-plugin-perfectionist'
 export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) => {
 	const { onFinalize = (v) => v, preset = 'default' } = opts
 
+	const perfectionistPlugin = await unwrapDefault(import('eslint-plugin-perfectionist'))
+
 	const getPresetRules = (): LinterConfig['rules'] => {
 		if (preset === false) {
 			return
@@ -17,16 +19,13 @@ export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) =
 
 		if (preset === 'default') {
 			return {
-				// Enforce sorted exports
 				'perfectionist/sort-exports': [
 					'error',
 					{
-						groups: ['type-export', 'value-export', 'unknown'],
 						order: 'asc',
 						type: 'natural',
 					},
 				],
-				// Enforce sorted imports
 				'perfectionist/sort-imports': [
 					'error',
 					{
@@ -56,9 +55,8 @@ export const perfectionist: ConfigGroupFn<'perfectionist'> = async (opts, ctx) =
 						type: 'natural',
 					},
 				],
-				// Enforce sorted named exports
+
 				'perfectionist/sort-named-exports': ['error', { order: 'asc', type: 'natural' }],
-				// Enforce sorted named imports
 				'perfectionist/sort-named-imports': ['error', { order: 'asc', type: 'natural' }],
 			}
 		}

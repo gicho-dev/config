@@ -1,6 +1,7 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
 import { GLOBS } from '../core/constants'
+import { unwrapDefault } from '../core/utils'
 import { tsParser } from './ts'
 
 /**
@@ -20,7 +21,7 @@ export const svelte: ConfigGroupFn<'svelte'> = async (opts, ctx) => {
 		svelteConfig,
 	} = opts
 
-	const sveltePlugin = (await import('eslint-plugin-svelte')).default
+	const sveltePlugin = await unwrapDefault(import('eslint-plugin-svelte'))
 
 	const recommendedRules = sveltePlugin.configs.recommended.at(-1)?.rules
 	const prettierRules = sveltePlugin.configs.prettier.at(-1)?.rules

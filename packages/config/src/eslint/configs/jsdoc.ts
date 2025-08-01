@@ -1,6 +1,6 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
-import jsdocPlugin from 'eslint-plugin-jsdoc'
+import { unwrapDefault } from '../core/utils'
 
 /**
  * JSDoc configuration
@@ -9,6 +9,8 @@ import jsdocPlugin from 'eslint-plugin-jsdoc'
  */
 export const jsdoc: ConfigGroupFn<'jsdoc'> = async (opts, ctx) => {
 	const { onFinalize = (v) => v } = opts
+
+	const jsdocPlugin = await unwrapDefault(import('eslint-plugin-jsdoc'))
 
 	const items: LinterConfig[] = [
 		{
