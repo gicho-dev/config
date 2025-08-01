@@ -11,19 +11,10 @@ export const prettier: ConfigGroupFn<'prettier'> = async (options, ctx) => {
 	const items: LinterConfig[] = []
 
 	if (disableConflictingRules) {
-		const jsPreset = ctx.rootOptions.js?.preset
-
 		items.push({
 			name: 'gicho/disables/prettier',
 			rules: {
 				...(await import('eslint-config-prettier')).rules,
-
-				...(jsPreset === 'default'
-					? {
-							// Enforce consistent brace style for all control statements
-							curly: 'error',
-						}
-					: undefined),
 			},
 		})
 	}

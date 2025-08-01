@@ -50,8 +50,6 @@ export const js: ConfigGroupFn<'js'> = (opts, ctx) => {
 
 				// Enforce getter and setter pairs in objects and classes
 				'accessor-pairs': 'error',
-				// Enforce consistent brace style for all control statements
-				curly: 'error',
 				// Enforce default clauses in switch statements to be last
 				'default-case-last': 'error',
 				// Enforce dot notation whenever possible
