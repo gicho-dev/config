@@ -24,6 +24,7 @@ import { react } from '../configs/react'
 import { regexp } from '../configs/regexp'
 import { stylistic } from '../configs/stylistic'
 import { svelte } from '../configs/svelte'
+import { test } from '../configs/test'
 import { ts } from '../configs/ts'
 import { findPackages, normalizeOptions } from './utils'
 
@@ -54,6 +55,7 @@ export async function defineConfig<TRules extends RulesRecord = DefaultRules>(
 		regexp,
 		stylistic,
 		svelte,
+		test,
 		ts,
 	} satisfies Record<ConfigGroupName, IConfigGroupFn<DefaultRules>> as unknown as Record<
 		ConfigGroupName,
@@ -81,6 +83,7 @@ export async function defineConfig<TRules extends RulesRecord = DefaultRules>(
 		svelte: detected.svelte,
 
 		// finish step
+		test: true,
 		prettier: detected.prettier,
 		disables: true,
 	} satisfies Record<ConfigGroupName, boolean>
@@ -103,6 +106,7 @@ export async function defineConfig<TRules extends RulesRecord = DefaultRules>(
 	const externalFormatter = opts.prettier.enabled
 
 	const ctx: ConfigGroupFnContext<TRules> = {
+		enableAllGroups,
 		externalFormatter,
 		rootOptions: opts,
 	}

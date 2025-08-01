@@ -1,6 +1,8 @@
+const SRC_EXT = '?([cm])[jt]s?(x)'
+
 export const GLOBS = {
-	SRC: '**/*.?([cm])[jt]s?(x)',
-	SRC_EXT: '?([cm])[jt]s?(x)',
+	SRC: `**/*.${SRC_EXT}`,
+	SRC_EXT,
 
 	JS: '**/*.?([cm])js',
 	JSX: '**/*.?([cm])jsx',
@@ -17,6 +19,9 @@ export const GLOBS = {
 	JSON: '**/*.json',
 	JSON5: '**/*.json5',
 	JSONC: '**/*.jsonc',
+
+	TESTS: [`**/{__tests__,tests}/**/*.${SRC_EXT}`, `**/*.{bench,benchmark,spec,test}.${SRC_EXT}`],
+	TESTS_FIXTURE: [`**/fixtures/**/*.${SRC_EXT}`, `**/*.{fixture}.${SRC_EXT}`],
 
 	EXCLUDE: [
 		'**/node_modules',

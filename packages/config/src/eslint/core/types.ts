@@ -135,6 +135,15 @@ interface GroupOptions<TRules extends RulesRecord> {
 	stylistic?: boolean | ConfigGroupOptionsMap<TRules>['stylistic']
 
 	/**
+	 * Enables test-related rules. (Vitest)
+	 * Pass `true` for default options or an object for custom options.
+	 *
+	 * @default true
+	 * @see https://vitest.dev/eslint-plugin/
+	 */
+	test?: boolean | ConfigGroupOptionsMap<TRules>['test']
+
+	/**
 	 * Enables TypeScript support.
 	 * Pass `true` for default options or an object for custom options.
 	 *
@@ -216,6 +225,7 @@ export type IConfigGroupFn<TRules extends RulesRecord = DefaultRules> = (
 export type ConfigGroupFnReturn<TRules extends RulesRecord> = Awaitable<LinterConfig<TRules>[]>
 
 export interface ConfigGroupFnContext<TRules extends RulesRecord> {
+	enableAllGroups: boolean
 	externalFormatter?: boolean
 	rootOptions: ResolvedConfigOptions<TRules>
 }
@@ -223,14 +233,7 @@ export interface ConfigGroupFnContext<TRules extends RulesRecord> {
 export type ConfigGroupName = keyof ConfigGroupOptionsMap<DefaultRules>
 
 export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
-	disables: BaseOptions<TRules> & {
-		/**
-		 * Whether to apply disable rules for test files.
-		 *
-		 * @default false
-		 */
-		tests?: boolean
-	}
+	disables: BaseOptions<TRules>
 
 	ignores: BaseOptions<TRules> & {
 		/**
@@ -294,6 +297,10 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 					/**
 					 * Specifies which rule preset to use from the `eslint-plugin-jsx-a11y` plugin.
 					 *
+					 * - `false` - No rules are applied.
+					 * - `'default'` - Enables the default (opinionated) rules.
+					 * - `Others` - Use a named preset from the `eslint-plugin-jsx-a11y` plugin.
+					 *
 					 * @default 'default'
 					 * @see https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
 					 */
@@ -304,6 +311,10 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 	node: BaseOptionsWithRules<TRules> & {
 		/**
 		 * Specifies which rule preset to use from the `eslint-plugin-n` plugin.
+		 *
+		 * - `false` - No rules are applied.
+		 * - `'default'` - Enables the default (opinionated) rules.
+		 * - `Others` - Use a named preset from the `eslint-plugin-n` plugin.
 		 *
 		 * @default 'default'
 		 * @see https://github.com/eslint-community/eslint-plugin-n
@@ -347,6 +358,10 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 		/**
 		 * Specifies which rule preset to use from the `eslint-plugin-regexp` plugin.
 		 *
+		 * - `false` - No rules are applied.
+		 * - `'default'` - Enables the default (opinionated) rules.
+		 * - `Others` - Use a named preset from the `eslint-plugin-regexp` plugin.
+		 *
 		 * @default 'default'
 		 * @see https://ota-meshi.github.io/eslint-plugin-regexp/user-guide/
 		 */
@@ -361,6 +376,32 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 			 * Svelte configuration
 			 */
 			svelteConfig?: Record<string, any>
+		}
+
+	test: BaseOptionsWithRules<TRules> &
+		FilesOptions & {
+			/**
+			 * Enables Vitest rules.
+			 * Pass `true` for default options or an object for custom options.
+			 *
+			 * @default auto-detected based on the dependencies
+			 * @see https://github.com/vitest-dev/eslint-plugin-vitest
+			 */
+			vitest?:
+				| boolean
+				| (BaseOptionsWithRules<TRules> & {
+						/**
+						 * Specifies which rule preset to use from the `@vitest/eslint-plugin` plugin.
+						 *
+						 * - `false` - No rules are applied.
+						 * - `'default'` - Enables the default (opinionated) rules.
+						 * - `Others` - Use a named preset from the `@vitest/eslint-plugin` plugin.
+						 *
+						 * @default 'default'
+						 * @see https://github.com/vitest-dev/eslint-plugin-vitest
+						 */
+						preset?: false | 'default' | 'all' | 'recommended'
+				  })
 		}
 
 	ts: BaseOptionsWithRules<TRules> &
@@ -391,7 +432,6 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 			 *
 			 * - `false` - No rules are applied.
 			 * - `'default'` - Enables the default (opinionated) rules.
-			 * - `'default-library'` - Enables the default (opinionated) rules for library files.
 			 * - `Others` - Use a named preset from the `typescript-eslint` plugin.
 			 *
 			 * @default 'default'

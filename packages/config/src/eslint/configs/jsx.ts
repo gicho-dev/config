@@ -9,10 +9,10 @@ import { normalizeOptions, unwrapDefault } from '../core/utils'
  * @see https://github.com/jsx-eslint/eslint-plugin-jsx-a11y
  */
 export const jsx: ConfigGroupFn<'jsx'> = async (opts, ctx) => {
-	const { a11y = false, onFinalize = (v) => v } = opts
+	const { a11y, onFinalize = (v) => v } = opts
 
 	const getA11yConfig = async (): Promise<LinterConfig | undefined> => {
-		const opts2 = normalizeOptions(a11y, false)
+		const opts2 = normalizeOptions(a11y, ctx.enableAllGroups)
 		const { enabled, preset = 'default' } = opts2
 
 		if (!enabled) {

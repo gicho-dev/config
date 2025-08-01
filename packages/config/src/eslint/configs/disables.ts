@@ -52,16 +52,6 @@ export const disables: ConfigGroupFn<'disables'> = async (opts, ctx) => {
 		},
 
 		{
-			name: 'gicho/disables/tests',
-			files: [
-				`**/*.{bench,fixture,spec,test}.${GLOBS.SRC_EXT}`,
-				`**/{tests,__tests__}/**/*.${GLOBS.SRC_EXT}`,
-			],
-			rules: {
-				'@typescript-eslint/explicit-function-return-type': 'off',
-			},
-		},
-		{
 			name: 'gicho/disables/stories',
 			files: [`**/*.stories.${GLOBS.SRC_EXT}`],
 			rules: {

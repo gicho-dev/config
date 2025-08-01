@@ -54,6 +54,7 @@
 	"dependencies": {
 		"@eslint/js": "catalog:prod",
 		"@stylistic/eslint-plugin": "catalog:prod",
+		"@vitest/eslint-plugin": "catalog:prod",
 		"eslint-config-flat-gitignore": "catalog:prod",
 		"eslint-config-prettier": "catalog:prod",
 		"eslint-plugin-import-x": "catalog:prod",
