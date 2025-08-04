@@ -5,7 +5,7 @@
 		"target": "esnext",
 		"module": "esnext",
 		"moduleResolution": "bundler",
-		"lib": ["esnext", "dom"],
+		"lib": ["dom", "dom.iterable", "esnext"],
 
 		"allowImportingTsExtensions": true,
 		"allowJs": true,
