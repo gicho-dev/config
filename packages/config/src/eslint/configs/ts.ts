@@ -61,7 +61,7 @@ export const ts: ConfigGroupFn<'ts'> = async (opts, ctx) => {
 				// 🎨 Enforce type definitions to consistently use either interface or type.
 				'@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
 				// ✅ Disallow accidentally using the "empty object" type.
-				'@typescript-eslint/no-empty-object-type': ['error', { allowObjectTypes: 'always' }],
+				'@typescript-eslint/no-empty-object-type': ['error', { allowInterfaces: 'always' }],
 				// ✅ Disallow the any type.
 				'@typescript-eslint/no-explicit-any': 'off',
 				// ✅ Disallow unused variables.
