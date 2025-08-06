@@ -52,6 +52,10 @@
 		"lint": "eslint . --cache",
 		"lint:fix": "pnpm lint -- --fix",
 		"prepublishOnly": "tsx ../../scripts/prepublish.ts",
+		"test": "vitest",
+		"test:b": "vitest bench",
+		"test:r": "vitest run",
+		"test:w": "vitest watch",
 		"types": "tsc --noEmit"
 	},
 	"dependencies": {
