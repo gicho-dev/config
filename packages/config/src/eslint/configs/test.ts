@@ -35,7 +35,6 @@ export const test: ConfigGroupFn<'test'> = async (opts, ctx) => {
 					'vitest/no-identical-title': 'error',
 					'vitest/no-import-node-test': 'error',
 					'vitest/prefer-hooks-in-order': 'error',
-					'vitest/prefer-lowercase-title': 'error',
 				}
 			}
 
