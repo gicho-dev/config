@@ -13,14 +13,13 @@
 	},
 	"scripts": {
 		"build": "turbo build",
-		"clean": "rimraf lib/*",
+		"clean": "tsx scripts/clean.ts",
 		"format": "prettier --check .",
 		"format:fix": "prettier --check --write .",
 		"lint": "eslint . --cache",
 		"lint:fix": "pnpm lint -- --fix",
 		"gen:eslint-rules-obj": "tsx scripts/gen-eslint-rules-obj.ts",
 		"gen:eslint-types": "jiti scripts/gen-eslint-types.ts",
-		"reset": "pnpm clean && pnpm install",
 		"types": "turbo run types",
 		"types:p": "turbo run types --filter=\"./packages/*\"",
 		"all": "pnpm -F \"./{packages}/**\"",
@@ -28,6 +27,7 @@
 		"cfg": "pnpm -F ./packages/config"
 	},
 	"devDependencies": {
+		"@gicho/cli": "catalog:dev",
 		"@gicho/config": "workspace:^",
 		"@types/node": "catalog:dev",
 		"@typescript-eslint/utils": "catalog:dev",

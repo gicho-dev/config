@@ -7,6 +7,7 @@ onlyBuiltDependencies:
 
 catalogs:
   dev:
+    '@gicho/cli': ^0.0.1-alpha.4
     '@types/node': ^24.2.0
     '@types/eslint-plugin-jsx-a11y': ^6.10.0
     '@typescript-eslint/utils': ^8.39.0
@@ -31,7 +32,7 @@ catalogs:
     eslint-config-flat-gitignore: ^2.1.0
     eslint-config-prettier: ^10.1.8
     eslint-plugin-import-x: ^4.16.1
-    eslint-plugin-jsdoc: ^52.0.3
+    eslint-plugin-jsdoc: ^52.0.4
     eslint-plugin-jsonc: ^2.20.1
     eslint-plugin-n: ^17.21.3
     eslint-plugin-perfectionist: ^4.15.0
