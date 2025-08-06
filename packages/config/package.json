@@ -1,6 +1,6 @@
 {
 	"name": "@gicho/config",
-	"version": "0.0.1-alpha.9",
+	"version": "0.0.1-alpha.10",
 	"description": "Reusable base ESLint, Prettier and TSConfig for modern TS/JS projects.",
 	"keywords": [
 		"config",
@@ -42,6 +42,7 @@
 		"dist",
 		"src",
 		"tsconfig.base.json",
+		"tsconfig.json",
 		"tsconfig.react.json"
 	],
 	"scripts": {
