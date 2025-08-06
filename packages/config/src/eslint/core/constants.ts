@@ -31,6 +31,7 @@ export const GLOBS = {
 		'**/bun.lockb',
 
 		'**/build',
+		'!**/scripts/build',
 		'**/dist',
 		'**/output',
 		'**/{temp,.temp,tmp,.tmp}',
