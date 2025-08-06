@@ -14,7 +14,10 @@
 	"scripts": {
 		"build": "turbo build",
 		"clean": "rimraf lib/*",
-		"lint": "eslint .",
+		"format": "prettier --check .",
+		"format:fix": "prettier --check --write .",
+		"lint": "eslint . --cache",
+		"lint:fix": "pnpm lint -- --fix",
 		"gen:eslint-rules-obj": "tsx scripts/gen-eslint-rules-obj.ts",
 		"gen:eslint-types": "jiti scripts/gen-eslint-types.ts",
 		"reset": "pnpm clean && pnpm install",

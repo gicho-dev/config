@@ -46,9 +46,10 @@
 	"scripts": {
 		"b": "tsdown",
 		"build": "tsdown",
-		"lint": "eslint .",
-		"lint:fix": "eslint --fix .",
-		"format": "prettier --write .",
+		"format": "prettier --check .",
+		"format:fix": "prettier --check --write .",
+		"lint": "eslint . --cache",
+		"lint:fix": "pnpm lint -- --fix",
 		"types": "tsc --noEmit"
 	},
 	"dependencies": {

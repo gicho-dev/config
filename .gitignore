@@ -49,6 +49,7 @@ yarn-error.log*
 # misc.
 .cache
 .DS_Store
+.eslintcache
 .local
 .tsbuildinfo
 .turbo
