@@ -1,6 +1,6 @@
 {
 	"name": "@gicho/config",
-	"version": "0.0.1-alpha.7",
+	"version": "0.0.1-alpha.9",
 	"description": "Reusable base ESLint, Prettier and TSConfig for modern TS/JS projects.",
 	"keywords": [
 		"config",
@@ -40,6 +40,7 @@
 	},
 	"files": [
 		"dist",
+		"src",
 		"tsconfig.base.json",
 		"tsconfig.react.json"
 	],
@@ -50,6 +51,7 @@
 		"format:fix": "prettier --check --write .",
 		"lint": "eslint . --cache",
 		"lint:fix": "pnpm lint -- --fix",
+		"prepublishOnly": "tsx ../../scripts/prepublish.ts",
 		"types": "tsc --noEmit"
 	},
 	"dependencies": {
