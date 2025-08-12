@@ -56,6 +56,7 @@ export const disables: ConfigGroupFn<'disables'> = async (opts, ctx) => {
 			files: [`**/*.stories.${GLOBS.SRC_EXT}`],
 			rules: {
 				'no-console': 'off',
+				'react-hooks/rules-of-hooks': 'off',
 				'@typescript-eslint/explicit-function-return-type': 'off',
 			},
 		},
