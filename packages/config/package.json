@@ -1,6 +1,6 @@
 {
 	"name": "@gicho/config",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"description": "Reusable base ESLint, Prettier and TSConfig for modern TS/JS projects.",
 	"keywords": [
 		"config",
