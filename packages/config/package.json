@@ -69,6 +69,7 @@
 		"eslint-plugin-jsonc": "catalog:prod",
 		"eslint-plugin-n": "catalog:prod",
 		"eslint-plugin-perfectionist": "catalog:prod",
+		"eslint-plugin-prettier": "catalog:prod",
 		"eslint-plugin-regexp": "catalog:prod",
 		"globals": "catalog:prod",
 		"typescript-eslint": "catalog:prod"
