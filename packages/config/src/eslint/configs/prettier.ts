@@ -1,5 +1,7 @@
 import type { ConfigGroupFn, LinterConfig } from '../core/types'
 
+import { unwrapDefault } from '../core/utils'
+
 /**
  * Prettier configuration
  *
@@ -11,8 +13,10 @@ export const prettier: ConfigGroupFn<'prettier'> = async (options, ctx) => {
 
 	const items: LinterConfig[] = []
 
-	const prettierConfig = await import('eslint-config-prettier')
-	const prettierPluginRecommended = await import('eslint-plugin-prettier/recommended')
+	const prettierConfig = await unwrapDefault(import('eslint-config-prettier'))
+	const prettierPluginRecommended = await unwrapDefault(
+		import('eslint-plugin-prettier/recommended'),
+	)
 
 	const item: LinterConfig = { name: 'gicho/prettier/rules' }
 
