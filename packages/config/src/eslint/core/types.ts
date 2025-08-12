@@ -344,12 +344,12 @@ export interface ConfigGroupOptionsMap<TRules extends RulesRecord> {
 
 	prettier: BaseOptionsWithRules<TRules> & {
 		/**
-		 * Whether to disable rules that conflict with Prettier formatting.
+		 * Whether to enable the `eslint-plugin-prettier` plugin.
 		 *
 		 * @default false
-		 * @see https://github.com/prettier/eslint-config-prettier
+		 * @see https://github.com/prettier/eslint-plugin-prettier
 		 */
-		disableConflictingRules?: boolean
+		enablePlugin?: boolean
 	}
 
 	react: BaseOptionsWithRules<TRules> & FilesOptions

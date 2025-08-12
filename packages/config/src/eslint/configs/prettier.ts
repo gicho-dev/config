@@ -4,20 +4,33 @@ import type { ConfigGroupFn, LinterConfig } from '../core/types'
  * Prettier configuration
  *
  * @see https://github.com/prettier/eslint-config-prettier
+ * @see https://github.com/prettier/eslint-plugin-prettier
  */
 export const prettier: ConfigGroupFn<'prettier'> = async (options, ctx) => {
-	const { disableConflictingRules = true, onFinalize = (v) => v } = options
+	const { enablePlugin = false, onFinalize = (v) => v } = options
 
 	const items: LinterConfig[] = []
 
-	if (disableConflictingRules) {
-		items.push({
-			name: 'gicho/disables/prettier',
-			rules: {
-				...(await import('eslint-config-prettier')).rules,
-			},
-		})
+	const prettierConfig = await import('eslint-config-prettier')
+	const prettierPluginRecommended = await import('eslint-plugin-prettier/recommended')
+
+	const item: LinterConfig = { name: 'gicho/prettier/rules' }
+
+	if (enablePlugin) {
+		item.plugins = { ...prettierPluginRecommended.plugins }
+		item.rules = {
+			...prettierPluginRecommended.rules,
+			// custom rules
+			...options.rules,
+		}
+	} else {
+		item.rules = {
+			...prettierConfig.rules,
+			// custom rules
+			...options.rules,
+		}
 	}
+	items.push(item)
 
 	return onFinalize(items, ctx) ?? items
 }
